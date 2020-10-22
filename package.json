@@ -1,5 +1,5 @@
 {
-  "name": "@civicactions/data-catalog-templates",
+  "name": "@civicactions/data-catalog-services",
   "version": "0.1.0",
   "description": "",
   "main": "lib/index.js",
