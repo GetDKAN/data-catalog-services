@@ -17,17 +17,20 @@ const data = {
 
 describe('useDataset Custom Hook', () => {
   test('returns dataset from metadata store', async () => {
-    axios.get.mockImplementationOnce(() => Promise.resolve(data));
-    const { result } = renderHook(() => useMetastoreDataset())
-    await act(async () => {
-      result.current.setQuery({
-        rootUrl: rootUrl,
-        id: id,
-      });
-    });
+    axios.get.mockImplementation(() => Promise.resolve(data));
+    const { result } = renderHook(() => useMetastoreDataset(id, rootUrl))
+    await act(async () => { });
     expect(result.current.dataset).toEqual(data.data);
     expect(axios.get).toHaveBeenCalledWith(
       `${rootUrl}/metastore/schemas/dataset/items/${id}?show-reference-ids`,
+    );
+    await act(async () => { result.current.setId('foobar') });
+    expect(axios.get).toHaveBeenCalledWith(
+      `${rootUrl}/metastore/schemas/dataset/items/foobar?show-reference-ids`,
+    );
+    await act(async () => { result.current.setRootUrl('demosite') });
+    expect(axios.get).toHaveBeenCalledWith(
+      `demosite/metastore/schemas/dataset/items/foobar?show-reference-ids`,
     );
   });
 });
