@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-export function useDataset() {
+export function useMetastoreDataset() {
   const [dataset, setDataset] = useState({});
   const [query, setQuery] = useState({rootUrl: '', id: ''});
   const { rootUrl, id } = query;
