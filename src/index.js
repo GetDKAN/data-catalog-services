@@ -1,2 +1,2 @@
 // HOOKS
-export { default as useMetastoreDataset } from './hooks/useMetastoreDataset';
+export { useMetastoreDataset } from './hooks/useMetastoreDataset';
