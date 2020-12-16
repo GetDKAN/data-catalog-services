@@ -1,11 +1,8 @@
-import React from 'react';
 import axios from 'axios';
 import {renderHook, act} from '@testing-library/react-hooks'
 import '@testing-library/jest-dom/extend-expect';
-import { fetchDataset, useDataset } from './useMetastoreDataset';
-
+import { useDataset } from '.';
 jest.mock('axios');
-
 const id = '1234-abcd';
 const rootUrl = 'http://dkan.com/api/1'
 const data = {
