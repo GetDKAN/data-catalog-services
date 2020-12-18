@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-export function useMetastoreDataset(datasetId, rootAPIUrl) {
+const useMetastoreDataset = (datasetId, rootAPIUrl) => {
   const [dataset, setDataset] = useState({});
   const [id, setId] = useState(datasetId)
   const [rootUrl, setRootUrl] = useState(rootAPIUrl)
@@ -14,3 +14,5 @@ export function useMetastoreDataset(datasetId, rootAPIUrl) {
   }, [id, rootUrl]);
   return {dataset, setId, setRootUrl};
 }
+
+export default useMetastoreDataset;
