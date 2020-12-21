@@ -2,26 +2,7 @@ import {useState, useEffect} from 'react';
 import axios from 'axios';
 import { prepareColumns } from '../../Resource/helpers';
 
-export function transformTableFilterToQueryCondition(filterArray) {
-  const conditions = filterArray.map((f) => {
-    return {
-      resource: 't',
-      property: f.id,
-      value: `%${f.value}%`, //% doesn't work %
-      operator: 'like',
-    }
-  });
-  return conditions;
-}
-// OPERATORS
-// =
-// <> not equal to
-// BETWEEN
-// IN
-// NOT IN
-// >=
-// <=
-// like
+
 
 const useDatastore = (resourceId, rootAPIUrl, options) => {
   const keys = options.keys ? options.keys : true;
