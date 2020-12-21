@@ -1,6 +1,30 @@
 import {useState, useEffect} from 'react';
 import axios from 'axios';
 import { prepareColumns } from '../../Resource/helpers';
+import { sort } from 'core-js/fn/array';
+
+// {id: "record_number", desc: true}
+
+// "sort": {
+  //   "desc": [ "record_number" ],
+  //   "asc": []
+  // }
+export function transformTableSortToQuerySort(sortArray) {
+  let newQuery = {
+    asc: [],
+    desc: [],
+  }
+  sortArray.forEach((s) => {
+    if (s.desc) {
+      return newQuery.desc.push(s.id)
+    } else {
+      return newQuery.asc.push(s.id)
+    }
+  })
+  return newQuery;
+}
+
+
 
 export function transformTableFilterToQueryCondition(filterArray) {
   const conditions = filterArray.map((f) => {
@@ -34,6 +58,9 @@ const useDatastoreQuery = (resourceId, rootAPIUrl, options) => {
   const [offset, setOffset] = useState(options.offset ? options.offset : 0);
   const [loading, setLoading] = useState(false);
   const [conditions, setConditions] = useState()
+  const [sort, setSort] = useState()
+  // const [joins, setJoins] = useState()
+  // const [properties, setProperties] = useState()
 
   useEffect(() => {
     async function fetchData() {
@@ -49,7 +76,8 @@ const useDatastoreQuery = (resourceId, rootAPIUrl, options) => {
           keys: keys,
           limit: limit,
           offset: offset,
-          conditions: conditions
+          conditions: conditions,
+          sort: sort,
         }
       })
       .then((res) => {
@@ -63,7 +91,7 @@ const useDatastoreQuery = (resourceId, rootAPIUrl, options) => {
       })
     }
     fetchData()
-  }, [id, rootUrl, limit, offset, conditions])
+  }, [id, rootUrl, limit, offset, conditions, sort])
   
   return {
     loading,
@@ -71,12 +99,13 @@ const useDatastoreQuery = (resourceId, rootAPIUrl, options) => {
     count,
     columns,
     limit,
-    offset, 
+    offset,
     setResource,
     setRootUrl,
     setLimit,
     setOffset,
     setConditions,
+    setSort,
   }
 }
 

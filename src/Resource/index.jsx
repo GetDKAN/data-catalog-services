@@ -16,6 +16,7 @@ const Resource = ({ distribution, rootUrl, children, options }) => {
     setLimit,
     setOffset,
     setConditions,
+    setSort,
   } = useDatastoreQuery(identifier, rootUrl, options);
   const actions = {
     setResource,
@@ -23,6 +24,7 @@ const Resource = ({ distribution, rootUrl, children, options }) => {
     setOffset,
     setCurrentPage,
     setConditions,
+    setSort,
   };
   return (
     <ResourceDispatch.Provider value={{
