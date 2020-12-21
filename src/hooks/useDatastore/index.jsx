@@ -1,30 +1,6 @@
 import {useState, useEffect} from 'react';
 import axios from 'axios';
 import { prepareColumns } from '../../Resource/helpers';
-import { sort } from 'core-js/fn/array';
-
-// {id: "record_number", desc: true}
-
-// "sort": {
-  //   "desc": [ "record_number" ],
-  //   "asc": []
-  // }
-export function transformTableSortToQuerySort(sortArray) {
-  let newQuery = {
-    asc: [],
-    desc: [],
-  }
-  sortArray.forEach((s) => {
-    if (s.desc) {
-      return newQuery.desc.push(s.id)
-    } else {
-      return newQuery.asc.push(s.id)
-    }
-  })
-  return newQuery;
-}
-
-
 
 export function transformTableFilterToQueryCondition(filterArray) {
   const conditions = filterArray.map((f) => {
@@ -47,7 +23,7 @@ export function transformTableFilterToQueryCondition(filterArray) {
 // <=
 // like
 
-const useDatastoreQuery = (resourceId, rootAPIUrl, options) => {
+const useDatastore = (resourceId, rootAPIUrl, options) => {
   const keys = options.keys ? options.keys : true;
   const [values, setValues] = useState([]);
   const [id, setResource] = useState(resourceId);
@@ -109,4 +85,4 @@ const useDatastoreQuery = (resourceId, rootAPIUrl, options) => {
   }
 }
 
-export default useDatastoreQuery;
+export default useDatastore;
