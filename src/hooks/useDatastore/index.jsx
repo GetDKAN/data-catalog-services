@@ -1,11 +1,9 @@
 import {useState, useEffect} from 'react';
-import axios from 'axios';
-import { prepareColumns } from '../../Resource/helpers';
-
-
+import { fetchDataFromQuery } from './fetch';
 
 const useDatastore = (resourceId, rootAPIUrl, options) => {
   const keys = options.keys ? options.keys : true;
+  const { prepareColumns } = options;
   const [values, setValues] = useState([]);
   const [id, setResource] = useState(resourceId);
   const [rootUrl, setRootUrl] = useState(rootAPIUrl);
@@ -20,36 +18,13 @@ const useDatastore = (resourceId, rootAPIUrl, options) => {
   // const [properties, setProperties] = useState()
 
   useEffect(() => {
-    async function fetchData() {
-      if(!id) {
-        return false;
-      }
-      setLoading(true)
-      return await axios({
-        method: 'post',
-        url: `${rootUrl}/datastore/query/?`,
-        data: {
-          'resources': [{id: id, alias: 't'}],
-          keys: keys,
-          limit: limit,
-          offset: offset,
-          conditions: conditions,
-          sort: sort,
-        }
-      })
-      .then((res) => {
-        const { data } = res;
-        setValues(data.results),
-        setCount(data.count)
-        if(data.results.length) {
-          setColumns(options.prepareColumns ? prepareColumns(Object.keys(data.results[0])) : Object.keys(data.results[0]))
-        }
-        setLoading(false)
-      })
+    if(!loading) {
+      fetchDataFromQuery(id, rootUrl,
+        { keys, limit, offset, conditions, sort, prepareColumns, setValues, setCount, setColumns, setLoading}
+      )
     }
-    fetchData()
   }, [id, rootUrl, limit, offset, conditions, sort])
-  
+
   return {
     loading,
     values,

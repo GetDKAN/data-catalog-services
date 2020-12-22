@@ -1,14 +1,12 @@
-// HOOKS
-// export { default as useMetastoreDataset } from './hooks/useMetastoreDataset';
+// CUSTOM HOOKS
 export { default as useDatastore } from './hooks/useDatastore'
-export { default as useMetastoreDataset } from './hooks/useMetastoreDataset'
-export { default as Resource } from './Resource'
-export { default as SQLResource } from './SQLResource'
-
-export { ResourceDispatch } from './Resource/helpers';
-
 export { default as useDatastoreSQL } from './hooks/useDatastoreSQL';
-export { transformTableFilterToSQLCondition } from './hooks/useDatastoreSQL';
+export { default as useMetastoreDataset } from './hooks/useMetastoreDataset'
 
+// REACT COMPONENTS and OUT OF BOX STUFF
+export { default as Resource } from './Resource'
+export { ResourceDispatch, prepareColumns } from './Resource/helpers';
+
+// TRANSFORMS
 export { transformTableSortToQuerySort } from './hooks/useDatastore/transformSorts';
-export { transformTableFilterToQueryCondition } from './hooks/useDatastore/transformConditions';
+export { transformTableFilterToQueryCondition, transformTableFilterToSQLCondition } from './hooks/useDatastore/transformConditions';

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import useDatastoreQuery from '../hooks/useDatastoreQuery';
+import PropTypes from 'prop-types';
+import useDatastore from '../hooks/useDatastore';
 import { ResourceDispatch } from './helpers';
 
 const Resource = ({ distribution, rootUrl, children, options }) => {
@@ -17,7 +18,7 @@ const Resource = ({ distribution, rootUrl, children, options }) => {
     setOffset,
     setConditions,
     setSort,
-  } = useDatastoreQuery(identifier, rootUrl, options);
+  } = useDatastore(identifier, rootUrl, options);
   const actions = {
     setResource,
     setLimit,
@@ -37,11 +38,35 @@ const Resource = ({ distribution, rootUrl, children, options }) => {
       offset: offset,
       currentPage: currentPage,
     }}>
-      {(values)
+      {(values.length)
         && children
       }
     </ResourceDispatch.Provider>
   );
 }
+
+Resource.defaultProps = {
+  options: {},
+};
+
+Resource.propTypes = {
+  distribution: PropTypes.shape({
+    identifier: PropTypes.string.isRequired,
+    data: PropTypes.shape({
+      downloadURL: PropTypes.string.isRequired,
+      format: PropTypes.string,
+      title: PropTypes.string,
+      mediaType: PropTypes.string,
+    })
+  }).isRequired,
+  rootUrl: PropTypes.string.isRequired,
+  children: PropTypes.element.isRequired,
+  options: PropTypes.shape({
+    limit: PropTypes.number,
+    offset: PropTypes.number,
+    keys: PropTypes.bool,
+    prepareColumns: PropTypes.func
+  })
+};
 
 export default Resource;
