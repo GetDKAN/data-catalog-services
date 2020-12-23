@@ -1,6 +1,6 @@
 {
   "name": "@civicactions/data-catalog-services",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "",
   "main": "lib/index.js",
   "scripts": {
@@ -76,10 +76,11 @@
     "@babel/preset-env": "^7.5.5",
     "@babel/preset-react": "^7.0.0",
     "@babel/runtime": "^7.6.2",
-    "@testing-library/dom": "^7.16.1",
+    "@testing-library/dom": "^7.29.0",
     "@testing-library/jest-dom": "^5.10.1",
     "@testing-library/react": "^10.2.1",
     "@testing-library/react-hooks": "^3.3.0",
+    "@testing-library/user-event": "^12.6.0",
     "babel-core": "^6.26.3",
     "babel-eslint": "^10.0.3",
     "babel-jest": "^24.9.0",
@@ -110,8 +111,8 @@
     "url-loader": "^1.1.2"
   },
   "peerDependencies": {
-    "react": "^16.9.0",
-    "react-dom": "^16.9.0"
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1"
   },
   "files": [
     "lib",

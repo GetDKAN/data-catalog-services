@@ -1,0 +1,72 @@
+import React, { useState } from 'react';
+import PropTypes from 'prop-types';
+import useDatastore from '../hooks/useDatastore';
+import { ResourceDispatch } from './helpers';
+
+const Resource = ({ distribution, rootUrl, children, options }) => {
+  const { identifier } = distribution;
+  const [currentPage, setCurrentPage] = useState(0);
+  const { 
+    loading,
+    values,
+    columns,
+    count,
+    limit,
+    offset,
+    setResource,
+    setLimit,
+    setOffset,
+    setConditions,
+    setSort,
+  } = useDatastore(identifier, rootUrl, options);
+  const actions = {
+    setResource,
+    setLimit,
+    setOffset,
+    setCurrentPage,
+    setConditions,
+    setSort,
+  };
+  return (
+    <ResourceDispatch.Provider value={{
+      loading: loading,
+      items: values,
+      columns: columns,
+      actions: actions,
+      totalRows: count,
+      limit: limit,
+      offset: offset,
+      currentPage: currentPage,
+    }}>
+      {(values.length)
+        && children
+      }
+    </ResourceDispatch.Provider>
+  );
+}
+
+Resource.defaultProps = {
+  options: {},
+};
+
+Resource.propTypes = {
+  distribution: PropTypes.shape({
+    identifier: PropTypes.string.isRequired,
+    data: PropTypes.shape({
+      downloadURL: PropTypes.string.isRequired,
+      format: PropTypes.string,
+      title: PropTypes.string,
+      mediaType: PropTypes.string,
+    })
+  }).isRequired,
+  rootUrl: PropTypes.string.isRequired,
+  children: PropTypes.element.isRequired,
+  options: PropTypes.shape({
+    limit: PropTypes.number,
+    offset: PropTypes.number,
+    keys: PropTypes.bool,
+    prepareColumns: PropTypes.func
+  })
+};
+
+export default Resource;
