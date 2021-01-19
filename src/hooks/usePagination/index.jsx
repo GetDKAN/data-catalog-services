@@ -20,7 +20,7 @@ const usePagination = (currentPage, totalItems, itemsPerPage) => {
       setCanGoToPrevious(true)
     }
 
-    if (pageIndex >= pages) {
+    if (pageIndex >= pages - 1) {
       setCanGoToNext(false)
     } else {
       setCanGoToNext(true)

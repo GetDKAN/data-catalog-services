@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import useDatastore from '../hooks/useDatastore';
 import { ResourceDispatch } from './helpers';
@@ -27,6 +27,15 @@ const Resource = ({ distribution, rootUrl, children, options }) => {
     setConditions,
     setSort,
   };
+
+  useEffect(() => {
+    setCurrentPage(0)
+  }, [limit])
+
+  useEffect(() => {
+    setOffset((Number(currentPage)) * limit)
+  }, [currentPage])
+
   return (
     <ResourceDispatch.Provider value={{
       loading: loading,
