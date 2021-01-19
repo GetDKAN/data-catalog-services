@@ -1,4 +1,4 @@
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useRef} from 'react';
 import { fetchDataFromQuery } from './fetch';
 
 const useDatastore = (resourceId, rootAPIUrl, options) => {
@@ -16,11 +16,18 @@ const useDatastore = (resourceId, rootAPIUrl, options) => {
   const [sort, setSort] = useState()
   // const [joins, setJoins] = useState()
   // const [properties, setProperties] = useState()
+  const prevLimitRef = useRef();
+
+  useEffect(() => {
+    prevLimitRef.current = limit;
+  })
+  const prevLimit = prevLimitRef.current;
 
   useEffect(() => {
     if(!loading) {
+      const newOffset = prevLimit === limit ? offset : 0;
       fetchDataFromQuery(id, rootUrl,
-        { keys, limit, offset, conditions, sort, prepareColumns, setValues, setCount, setColumns, setLoading}
+        { keys, limit, offset: newOffset, conditions, sort, prepareColumns, setValues, setCount, setColumns, setLoading}
       )
     }
   }, [id, rootUrl, limit, offset, conditions, sort])
