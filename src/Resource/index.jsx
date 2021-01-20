@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import useDatastore from '../hooks/useDatastore';
 import { ResourceDispatch } from './helpers';
 
 const Resource = ({ distribution, rootUrl, children, options }) => {
   const { identifier } = distribution;
-  const [currentPage, setCurrentPage] = useState(0);
   const { 
     loading,
     values,
@@ -23,10 +22,14 @@ const Resource = ({ distribution, rootUrl, children, options }) => {
     setResource,
     setLimit,
     setOffset,
-    setCurrentPage,
     setConditions,
     setSort,
   };
+
+  useEffect(() => {
+    setOffset(0)
+  }, [limit])
+
   return (
     <ResourceDispatch.Provider value={{
       loading: loading,
@@ -36,7 +39,6 @@ const Resource = ({ distribution, rootUrl, children, options }) => {
       totalRows: count,
       limit: limit,
       offset: offset,
-      currentPage: currentPage,
     }}>
       {(values.length)
         && children
