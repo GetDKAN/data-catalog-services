@@ -23,20 +23,19 @@ const useDatastore = (resourceId, rootAPIUrl, options) => {
   })
   const prevLimit = prevLimitRef.current;
 
-  useEffect(() => {
-    console.log(prevLimit === limit)
-    const newOffset = prevLimit === limit ? offset : 0;
-    setOffset(0)
-  }, [limit])
+  // useEffect(() => {
+  //   const newOffset = prevLimit === limit ? offset : 0;
+  //   setOffset(newOffset)
+  // }, [limit])
 
   useEffect(() => {
     if(!loading) {
-      console.log(offset)
+      const newOffset = prevLimit === limit ? offset : 0;
       fetchDataFromQuery(id, rootUrl,
-        { keys, limit, offset, conditions, sort, prepareColumns, setValues, setCount, setColumns, setLoading}
+        { keys, limit, offset: newOffset, conditions, sort, prepareColumns, setValues, setCount, setColumns, setLoading}
       )
     }
-  }, [id, rootUrl, offset, conditions, sort])
+  }, [id, rootUrl, offset, conditions, sort, limit])
 
   return {
     loading,

@@ -5,7 +5,6 @@ import { ResourceDispatch } from './helpers';
 
 const Resource = ({ distribution, rootUrl, children, options }) => {
   const { identifier } = distribution;
-  const [currentPage, setCurrentPage] = useState(0);
   const { 
     loading,
     values,
@@ -23,18 +22,13 @@ const Resource = ({ distribution, rootUrl, children, options }) => {
     setResource,
     setLimit,
     setOffset,
-    setCurrentPage,
     setConditions,
     setSort,
   };
 
   useEffect(() => {
-    setCurrentPage(0)
+    setOffset(0)
   }, [limit])
-
-  useEffect(() => {
-    setOffset((Number(currentPage)) * limit)
-  }, [currentPage])
 
   return (
     <ResourceDispatch.Provider value={{
@@ -45,7 +39,6 @@ const Resource = ({ distribution, rootUrl, children, options }) => {
       totalRows: count,
       limit: limit,
       offset: offset,
-      currentPage: currentPage,
     }}>
       {(values.length)
         && children
