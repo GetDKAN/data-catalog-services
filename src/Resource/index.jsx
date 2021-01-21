@@ -1,10 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
+import queryString from 'query-string';
+import { createHistory, LocationProvider } from '@reach/router'
 import useDatastore from '../hooks/useDatastore';
 import { ResourceDispatch } from './helpers';
 
 const Resource = ({ distribution, rootUrl, children, options }) => {
   const { identifier } = distribution;
+  let history = createHistory(window)
+  const basePath = `${history.location.origin}${history.location.pathname}`;
+  const search = history.location.search;
+  const [urlParams, setUrlParams] = useState(queryString.parse(search, {arrayFormat: 'index'}));
   const { 
     loading,
     values,
@@ -12,6 +18,8 @@ const Resource = ({ distribution, rootUrl, children, options }) => {
     count,
     limit,
     offset,
+    sort,
+    conditions,
     setResource,
     setLimit,
     setOffset,
@@ -29,6 +37,54 @@ const Resource = ({ distribution, rootUrl, children, options }) => {
   useEffect(() => {
     setOffset(0)
   }, [limit])
+  const prevParamRef = useRef();
+  useEffect(() => {
+    prevParamRef.current = urlParams;
+  });
+  const prevParam = prevParamRef.current;
+  console.log(prevParam)
+  useEffect(() => {
+  
+    let params = queryString.parse(search, {arrayFormat: 'index'})
+    console.log(conditions, sort)
+    if(conditions && conditions.length) {
+      conditions.forEach((c) => {
+        if(params[c.property]) {
+          params[c.property] = []
+        }
+        params[c.property] = [c.value]
+      })
+    }
+    if(sort && sort.asc.length) {
+      sort.asc.forEach((s) => {
+        if(params[s]) {
+          params[s].push('asc')
+        } else {
+          params[s] = ['', 'asc']
+        }
+      })
+    }
+    if(sort && sort.desc.length) {
+      sort.desc.forEach((s) => {
+        if(params.s) {
+          params[s].push('desc')
+        } else {
+          params[s] = ['', 'desc']
+        }
+      })
+    }
+
+    
+    
+    const urlString = queryString.stringify(params, {arrayFormat: 'index'})
+    const searchParams = urlString ? `?${urlString}` : '';
+    console.log('url', params)
+    if(urlString !== search) {
+      setUrlParams(params)
+      window.history.pushState({}, 'Dataset', `${basePath}${searchParams}`);
+    }
+  }, [conditions, sort, search])
+
 
   return (
     <ResourceDispatch.Provider value={{
@@ -39,6 +95,7 @@ const Resource = ({ distribution, rootUrl, children, options }) => {
       totalRows: count,
       limit: limit,
       offset: offset,
+      urlParams: urlParams,
     }}>
       {(values.length)
         && children

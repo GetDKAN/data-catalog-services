@@ -44,6 +44,8 @@ const useDatastore = (resourceId, rootAPIUrl, options) => {
     columns,
     limit,
     offset,
+    conditions,
+    sort,
     setResource,
     setRootUrl,
     setLimit,
