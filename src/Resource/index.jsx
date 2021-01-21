@@ -10,7 +10,7 @@ const Resource = ({ distribution, rootUrl, children, options }) => {
   let history = createHistory(window)
   const basePath = `${history.location.origin}${history.location.pathname}`;
   const search = history.location.search;
-  const [urlParams, setUrlParams] = useState(queryString.parse(search, {arrayFormat: 'index'}));
+  const [urlParams, setUrlParams] = useState(null);
   const { 
     loading,
     values,
@@ -36,52 +36,51 @@ const Resource = ({ distribution, rootUrl, children, options }) => {
 
   useEffect(() => {
     setOffset(0)
-  }, [limit])
-  const prevParamRef = useRef();
-  useEffect(() => {
-    prevParamRef.current = urlParams;
-  });
-  const prevParam = prevParamRef.current;
-  console.log(prevParam)
-  useEffect(() => {
-  
-    let params = queryString.parse(search, {arrayFormat: 'index'})
-    console.log(conditions, sort)
-    if(conditions && conditions.length) {
-      conditions.forEach((c) => {
-        if(params[c.property]) {
-          params[c.property] = []
-        }
-        params[c.property] = [c.value]
-      })
-    }
-    if(sort && sort.asc.length) {
-      sort.asc.forEach((s) => {
-        if(params[s]) {
-          params[s].push('asc')
-        } else {
-          params[s] = ['', 'asc']
-        }
-      })
-    }
-    if(sort && sort.desc.length) {
-      sort.desc.forEach((s) => {
-        if(params.s) {
-          params[s].push('desc')
-        } else {
-          params[s] = ['', 'desc']
-        }
-      })
-    }
+  }, [limit]);
 
-    
-    
-    const urlString = queryString.stringify(params, {arrayFormat: 'index'})
-    const searchParams = urlString ? `?${urlString}` : '';
-    console.log('url', params)
-    if(urlString !== search) {
+  useEffect(() => {
+    if(options.useUrlParams) {
+      const params = queryString.parse(search, {arrayFormat: 'index'})
       setUrlParams(params)
-      window.history.pushState({}, 'Dataset', `${basePath}${searchParams}`);
+    }
+  }, [])
+
+  useEffect(() => {
+    if(urlParams) {
+      let params = {}
+      console.log(conditions, sort)
+      if(conditions && conditions.length) {
+        conditions.forEach((c) => {
+          if(params[c.property]) {
+            params[c.property] = []
+          }
+          params[c.property] = [c.value]
+        })
+      }
+      if(sort && sort.asc.length) {
+        sort.asc.forEach((s) => {
+          if(params[s]) {
+            params[s].push('asc')
+          } else {
+            params[s] = ['', 'asc']
+          }
+        })
+      }
+      if(sort && sort.desc.length) {
+        sort.desc.forEach((s) => {
+          if(params[s]) {
+            params[s].push('desc')
+          } else {
+            params[s] = ['', 'desc']
+          }
+        })
+      }
+      const urlString = queryString.stringify(params, {arrayFormat: 'index'})
+      const searchParams = urlString ? `?${urlString}` : '';
+      if(searchParams !== search) {
+        setUrlParams(params)
+        window.history.pushState({}, 'Dataset', `${basePath}${searchParams}`);
+      }
     }
   }, [conditions, sort, search])
 
