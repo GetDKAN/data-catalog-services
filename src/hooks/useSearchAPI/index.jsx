@@ -1,34 +1,94 @@
-import {useState, useEffect, useRef} from 'react';
+import {useState, useEffect} from 'react';
 import axios from 'axios';
+import queryString from 'query-string';
 
-async function fetchDatasets(rootUrl) {
-  return await axios.get(`${rootUrl}/search`)
+function isSelectedFacet(currentFacet, selectedFacets) {
+  const isInSelectedFacets = selectedFacets[currentFacet.key].indexOf(currentFacet.value)
+  return isInSelectedFacets;
+}
+
+function updateFacetSelection(currentFacet, selectedFacets) {
+  const key = currentFacet['key']
+  let newFacetList = {...selectedFacets};
+  if(newFacetList[key]) {
+    const existingFacet = isSelectedFacet(currentFacet, newFacetList);
+    if(existingFacet > -1) {
+      newFacetList[key].splice(existingFacet, 1);
+    } else {
+      newFacetList[key] = [...newFacetList[key], currentFacet.value]
+    }
+  } else {
+    newFacetList[key] = [currentFacet.value]
+  }
+  return newFacetList;
+}
+
+async function fetchDatasets(rootUrl, fulltext, selectedFacets, sort, sortOrder) {
+  let params = {
+    fulltext: fulltext ? fulltext : '',
+    ...selectedFacets,
+    sort: sort ? sort : '',
+    ['sort-order']: sortOrder ? sortOrder : ''
+  }
+  return await axios.get(`${rootUrl}/search/?${queryString.stringify(params, {arrayFormat: 'comma', skipEmptyString: true })}`)
 }
 
 const useSearchAPI = (rootUrl) => {
+  const sortOptions = ['modified', 'title'];
+  const sortOrderOptions = ['asc', 'desc'];
   const [items, setItems] = useState([]);
-  const [facetResults, setFacetResults] = useState();
+  const [facets, setFacets] = useState([]);
   const [loading, setLoading] = useState(false);
   const [totalItems, setTotalItems] = useState(null)
+  const [selectedFacets, setSelectedFacets] = useState({})
+  const [fulltext, setFulltext] = useState('')
+  const [sort, setSort] = useState('');
+  const [sortOrder, setSortOrder] = useState('')
+  const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(10)
+
+  async function search() {
+    const results = await fetchDatasets(rootUrl, fulltext, selectedFacets, sort, sortOrder);
+    const itemKeys = Object.keys(results.data.results);
+    const itemsArray = itemKeys.map((key) => {
+      return results.data.results[key]
+    })
+    setFacets(results.data.facets)
+    setItems(itemsArray)
+    setTotalItems(results.data.total)
+    setLoading(false)
+  }
+
+  function updateSelectedFacets(currentFacet) {
+    const facets = updateFacetSelection(currentFacet, selectedFacets);
+    setSelectedFacets(facets);
+  }
 
   useEffect(() => {
-    async function search() {
-      const results = await fetchDatasets(rootUrl);
-      const itemKeys = Object.keys(results.data.results);
-      const itemsArray = itemKeys.map((key) => {
-        return results.data.results[key]
-      })
-      setItems(itemsArray)
-      setTotalItems(results.data.total)
-    }
-    search()
-  }, [])
+    const timer = setTimeout(() => {
+      setLoading(true)
+      search()
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, [fulltext, selectedFacets, sort, sortOrder])
 
   return {
+    sortOptions,
+    sortOrderOptions,
     items,
-    facetResults,
+    facets,
     loading,
-    totalItems
+    totalItems,
+    sort,
+    sortOrder,
+    page,
+    pageSize,
+    setPage,
+    setPageSize,
+    setSort,
+    setSortOrder,
+    updateSelectedFacets,
+    setFulltext,
   }
 }
 
