@@ -1,27 +1,7 @@
 import {useState, useEffect} from 'react';
 import axios from 'axios';
 import queryString from 'query-string';
-
-function isSelectedFacet(currentFacet, selectedFacets) {
-  const isInSelectedFacets = selectedFacets[currentFacet.key].indexOf(currentFacet.value)
-  return isInSelectedFacets;
-}
-
-function updateFacetSelection(currentFacet, selectedFacets) {
-  const key = currentFacet['key']
-  let newFacetList = {...selectedFacets};
-  if(newFacetList[key]) {
-    const existingFacet = isSelectedFacet(currentFacet, newFacetList);
-    if(existingFacet > -1) {
-      newFacetList[key].splice(existingFacet, 1);
-    } else {
-      newFacetList[key] = [...newFacetList[key], currentFacet.value]
-    }
-  } else {
-    newFacetList[key] = [currentFacet.value]
-  }
-  return newFacetList;
-}
+import { updateSelectedFacetObject } from './helpers';
 
 async function fetchDatasets(rootUrl, fulltext, selectedFacets, sort, sortOrder) {
   let params = {
@@ -59,8 +39,8 @@ const useSearchAPI = (rootUrl) => {
     setLoading(false)
   }
 
-  function updateSelectedFacets(currentFacet) {
-    const facets = updateFacetSelection(currentFacet, selectedFacets);
+  function updateFacetSelection(currentFacet) {
+    const facets = updateSelectedFacetObject(currentFacet, selectedFacets);
     setSelectedFacets(facets);
   }
 
