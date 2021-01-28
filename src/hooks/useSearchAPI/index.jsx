@@ -3,7 +3,7 @@ import axios from 'axios';
 import queryString from 'query-string';
 import { updateSelectedFacetObject } from './helpers';
 
-async function fetchDatasets(rootUrl, fulltext, selectedFacets, sort, sortOrder) {
+export async function fetchDatasets(rootUrl, fulltext, selectedFacets, sort, sortOrder) {
   let params = {
     fulltext: fulltext ? fulltext : '',
     ...selectedFacets,
@@ -39,7 +39,7 @@ const useSearchAPI = (rootUrl) => {
     setLoading(false)
   }
 
-  function updateFacetSelection(currentFacet) {
+  function updateSelectedFacets(currentFacet) {
     const facets = updateSelectedFacetObject(currentFacet, selectedFacets);
     setSelectedFacets(facets);
   }
