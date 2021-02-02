@@ -8,6 +8,7 @@ async function getPage(rootURL, uuid, entityType, bundle) {
   });
 }
 
+// @TODO move comments to its own hook.
 async function getComments(rootURL, uuid) {
   return await axios.get(`${rootURL}jsonapi/comment/comment?include=entity_id&filter[entity_id.id][value]=${uuid}`)
   .then((res) => {
