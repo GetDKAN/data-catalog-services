@@ -1,3 +1,6 @@
+import axios from 'axios';
+import queryString from 'query-string';
+
 export function separateFacets(facets) {
   let facetObj = {};
   facets.forEach((f) => {
@@ -29,4 +32,18 @@ export function updateSelectedFacetObject(currentFacet, selectedFacets) {
     newFacetList[key] = [currentFacet.value]
   }
   return newFacetList;
+}
+
+export async function fetchDatasets(rootUrl, options) {
+  const { fulltext, selectedFacets, sort, sortOrder, page, pageSize } = options;
+  
+  let params = {
+    fulltext: fulltext ? fulltext : '',
+    ...selectedFacets,
+    sort: sort ? sort : '',
+    ['sort-order']: sortOrder ? sortOrder : '',
+    page: page !== 1 ? page : '',  //use index except for when submitting to Search API
+    ['page-size']: pageSize !== 10 ? pageSize : '',
+  }
+  return await axios.get(`${rootUrl}/search/?${queryString.stringify(params, {arrayFormat: 'comma', skipEmptyString: true })}`)
 }

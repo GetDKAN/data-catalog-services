@@ -1,5 +1,20 @@
-import { separateFacets, isSelectedFacet, updateSelectedFacetObject } from './helpers';
+import axios from 'axios';
+import {
+  separateFacets,
+  isSelectedFacet,
+  updateSelectedFacetObject,
+  fetchDatasets,
+} from './helpers';
 
+jest.mock('axios');
+const rootUrl = 'http://dkan.com/api/1';
+const data = {
+  data: {
+    total: '0',
+    results: [],
+    facets: [],
+  }
+}
 const facetArray = [
   {name: "name-1", total: "1", type: "theme"},
   {name: "name-x", total: "3", type: "theme"},
@@ -52,4 +67,37 @@ describe('updateSelectedFacets', () => {
     const currentFacet = {key: 'keyword', value: 'bar'};
     expect(updateSelectedFacetObject(currentFacet, {})).toEqual({keyword: ['bar']});
   });
+});
+
+describe('fetchDatasets', () => {
+  test('requests default list of datasets from search API', async () => {
+    axios.get.mockImplementation(() => Promise.resolve(data));
+    await fetchDatasets(rootUrl, {})
+    expect(axios.get).toHaveBeenCalledWith(`${rootUrl}/search/?`);
+  });
+  test('requests fulltext filtered list of datasets from search API', async () => {
+    axios.get.mockImplementation(() => Promise.resolve(data));
+    await fetchDatasets(rootUrl, {fulltext: 'data'})
+    expect(axios.get).toHaveBeenCalledWith(`${rootUrl}/search/?fulltext=data`);
+  });
+  test('requests sorted list of datasets from search API', async () => {
+    axios.get.mockImplementation(() => Promise.resolve(data));
+    await fetchDatasets(rootUrl, {sort: 'alpha'})
+    expect(axios.get).toHaveBeenCalledWith(`${rootUrl}/search/?sort=alpha`);
+  })
+  test('requests sort ordered list of datasets from search API', async () => {
+    axios.get.mockImplementation(() => Promise.resolve(data));
+    await fetchDatasets(rootUrl, {sortOrder: 'asc'})
+    expect(axios.get).toHaveBeenCalledWith(`${rootUrl}/search/?sort-order=asc`);
+  })
+  test('requests list of datasets from search API using theme facets', async () => {
+    axios.get.mockImplementation(() => Promise.resolve(data));
+    await fetchDatasets(rootUrl, {selectedFacets: {theme: ['test', 'dkan']}})
+    expect(axios.get).toHaveBeenCalledWith(`${rootUrl}/search/?theme=test,dkan`);
+  })
+  test('requests list of datasets from search API using theme and keyword facets', async () => {
+    axios.get.mockImplementation(() => Promise.resolve(data));
+    await fetchDatasets(rootUrl, {selectedFacets: {theme: ['test', 'dkan'], keyword: ['react']}})
+    expect(axios.get).toHaveBeenCalledWith(`${rootUrl}/search/?keyword=react&theme=test,dkan`);
+  })
 });

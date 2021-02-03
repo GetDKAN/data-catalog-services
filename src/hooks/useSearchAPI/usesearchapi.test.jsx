@@ -1,44 +1,107 @@
 import axios from 'axios';
-import { waitFor } from '@testing-library/react';
 import {renderHook, act } from '@testing-library/react-hooks'
 import '@testing-library/jest-dom/extend-expect';
-import useSearchAPI, {fetchDatasets} from '.';
+import useSearchAPI from '.';
+
 jest.mock('axios');
 jest.useFakeTimers();
-// const id = '1234-abcd';
-const rootUrl = 'http://dkan.com/api/1'
-const data = {
+
+const rootUrl = 'http://dkan.com/api/1';
+const data_no_results = {
   data: {
     total: '0',
-    results: [],
+    results: {},
     facets: [],
   }
-}
+};
+
+const data_results = {
+  data: {
+    total: '1',
+    results: {
+      'dkan_dataset/5d69-frba': {title: 'dkan'}
+    },
+    facets: [
+      {
+      type: 'theme',
+      name: 'general',
+      total: '2'
+      },
+    ],
+  }
+};
+
 
 describe('useSearchAPI Custom Hook', () => {
-  test('return search results', async() => {
-    axios.get.mockImplementation(() => Promise.resolve(data));
+  test('return 0 search results', async() => {
+    axios.get.mockImplementation(() => Promise.resolve(data_no_results));
     const { result } = renderHook(() => useSearchAPI(rootUrl));
     await act(async () => { jest.runAllTimers() });
     expect(axios.get).toHaveBeenCalledWith(
       `${rootUrl}/search/?`,
     );
-    expect(result.current.totalItems).toEqual(data.data.total);
+    expect(result.current.totalItems).toEqual(data_no_results.data.total);
+    expect(result.current.sortOptions).toEqual(['modified', 'title']);
+    expect(result.current.sortOrderOptions).toEqual(['asc', 'desc']);
   });
 
-  // test('returns dataset from metadata store', async () => {
-  //   axios.get.mockImplementation(() => Promise.resolve(data));
-  //   const { result } = renderHook(() => useMetastoreDataset(id, rootUrl))
-  //   await act(async () => { });
-  //   expect(result.current.dataset).toEqual(data.data);
-  
-  //   await act(async () => { result.current.setId('foobar') });
-  //   expect(axios.get).toHaveBeenCalledWith(
-  //     `${rootUrl}/metastore/schemas/dataset/items/foobar?show-reference-ids`,
-  //   );
-  //   await act(async () => { result.current.setRootUrl('demosite') });
-  //   expect(axios.get).toHaveBeenCalledWith(
-  //     `demosite/metastore/schemas/dataset/items/foobar?show-reference-ids`,
-  //   );
-  // });
+  test('return 1 search results', async() => {
+    axios.get.mockImplementation(() => Promise.resolve(data_results));
+    const { result } = renderHook(() => useSearchAPI(rootUrl));
+    await act(async () => { jest.runAllTimers() });
+    expect(axios.get).toHaveBeenCalledWith(
+      `${rootUrl}/search/?`,
+    );
+    expect(result.current.totalItems).toEqual(data_results.data.total);
+    expect(result.current.items[0]).toEqual({title: 'dkan'});
+    expect(result.current.facets).toEqual(data_results.data.facets);
+  });
+
+  test('return 1 search results', async() => {
+    axios.get.mockImplementation(() => Promise.resolve(data_results));
+    const { result } = renderHook(() => useSearchAPI(rootUrl));
+    await act(async () => { jest.runAllTimers() });
+    expect(axios.get).toHaveBeenCalledWith(
+      `${rootUrl}/search/?`,
+    );
+    expect(result.current.selectedFacets).toEqual({});
+    await act(async () => { result.current.updateSelectedFacets({key: 'theme', value: 'dkan'}) });
+    await act(async () => { jest.runAllTimers() });
+    expect(axios.get).toHaveBeenCalledWith(
+      `${rootUrl}/search/?theme=dkan`,
+    );
+    expect(result.current.selectedFacets).toEqual({theme: ['dkan']});
+  });
+
+  test('updates search request with new page', async() => {
+    axios.get.mockImplementation(() => Promise.resolve(data_results));
+    const { result } = renderHook(() => useSearchAPI(rootUrl));
+    await act(async () => { jest.runAllTimers() });
+    expect(axios.get).toHaveBeenCalledWith(
+      `${rootUrl}/search/?`,
+    );
+    expect(result.current.page).toEqual(0);
+    await act(async () => { result.current.setPage(4)});
+    await act(async () => { jest.runAllTimers() });
+    expect(axios.get).toHaveBeenCalledWith(
+      `${rootUrl}/search/?page=5`,
+    );
+    expect(result.current.page).toEqual(4);
+  });
+
+  test('updates search request with new pageSize', async() => {
+    axios.get.mockImplementation(() => Promise.resolve(data_results));
+    const { result } = renderHook(() => useSearchAPI(rootUrl));
+    await act(async () => { jest.runAllTimers() });
+    expect(axios.get).toHaveBeenCalledWith(
+      `${rootUrl}/search/?`,
+    );
+    expect(result.current.pageSize).toEqual(10);
+    await act(async () => { result.current.setPageSize(25)});
+    await act(async () => { jest.runAllTimers() });
+    expect(axios.get).toHaveBeenCalledWith(
+      `${rootUrl}/search/?page-size=25`,
+    );
+    expect(result.current.pageSize).toEqual(25);
+  });
 });
