@@ -71,6 +71,7 @@ describe('<Resource />', () => {
   });
 
   test('renders data using initial conditions', async () => {
+    await axios.post.mockImplementation(() => Promise.resolve(data));
     render(
       <Resource
         distribution={distribution}
@@ -86,7 +87,12 @@ describe('<Resource />', () => {
     expect(axios.post).toHaveBeenCalledWith(
       "http://dkan.com/api/1/datastore/query/?",
       {
-        conditions: undefined,
+        conditions: [{
+          resource: 't',
+          property: 'foo',
+          value: `%bar%`,
+          operator: 'LIKE',
+        }],
         keys: true,
         limit: 20, 
         offset: 0, 
