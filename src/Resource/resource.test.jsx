@@ -6,6 +6,7 @@ import userEvent from '@testing-library/user-event'
 import '@testing-library/jest-dom/extend-expect';
 import Resource from './index';
 import { ResourceDispatch } from './helpers';
+import { transformTableFilterToQueryCondition } from '../hooks/useDatastore/transformConditions';
 
 jest.mock('axios');
 const rootUrl = 'http://dkan.com/api/1';
@@ -38,9 +39,8 @@ const MyTestComponent = () => {
 
 describe('<Resource />', () => {
   test('renders data', async () => {
-    await act(async () => {
-      await axios.post.mockImplementation(() => Promise.resolve(data));
-      render(
+    await axios.post.mockImplementation(() => Promise.resolve(data));
+    render(
         <Resource
           distribution={distribution}
           rootUrl={rootUrl}
@@ -48,6 +48,16 @@ describe('<Resource />', () => {
           <MyTestComponent />
         </Resource>
       );
+    await act(async () => {});
+    expect(axios.post).toHaveBeenCalledWith(
+      "http://dkan.com/api/1/datastore/query/?",
+    {
+      conditions: undefined,
+      keys: true,
+      limit: 20, 
+      offset: 0, 
+      resources: [{"alias": "t", "id": "1234-1234"}],
+      sort: undefined
     });
     expect(screen.getByText('fizz and 1 and 20 and 0')).toBeInTheDocument();
     await act(async () => {
@@ -58,6 +68,30 @@ describe('<Resource />', () => {
       userEvent.click(screen.getByText('Up Offset'));
     });
     expect(screen.getByText('fizz and 1 and 25 and 10')).toBeInTheDocument();
-    
   });
+
+  test('renders data using initial conditions', async () => {
+    render(
+      <Resource
+        distribution={distribution}
+        rootUrl={rootUrl}
+        options={{
+          conditions: transformTableFilterToQueryCondition([{id: 'foo', value: 'bar'}])
+        }}
+      >
+        <MyTestComponent />
+      </Resource>
+    );
+    await act(async () => {});
+    expect(axios.post).toHaveBeenCalledWith(
+      "http://dkan.com/api/1/datastore/query/?",
+      {
+        conditions: undefined,
+        keys: true,
+        limit: 20, 
+        offset: 0, 
+        resources: [{"alias": "t", "id": "1234-1234"}],
+        sort: undefined
+      });
+    })
 });
