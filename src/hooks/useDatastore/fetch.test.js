@@ -29,7 +29,8 @@ describe('fetchDataFromQuery', () => {
       sort: {asc: [], desc: []},
       setValues: () => {},
       setCount: () => {},
-      setColumns: () => {}
+      setColumns: () => {},
+      setSchema: () => {}
     })
     expect(results.count).toEqual(data.data.count);
     expect(results.results).toEqual(data.data.results);

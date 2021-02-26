@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export async function fetchDataFromQuery(id, rootUrl, options) {
-  const { keys, limit, offset, conditions, sort, prepareColumns, setValues, setCount, setColumns, setLoading } = options;
+  const { keys, limit, offset, conditions, sort, prepareColumns, setValues, setCount, setColumns, setLoading, setSchema } = options;
   if(!id) {
     // TODO: Throw error
     return false;
@@ -9,6 +9,7 @@ export async function fetchDataFromQuery(id, rootUrl, options) {
   if(typeof setLoading === 'function') {
     setLoading(true);
   }
+  console.log('service', conditions)
   return await axios.post(`${rootUrl}/datastore/query/?`, {
     resources: [{id: id, alias: 't'}],
     keys: keys,
@@ -24,6 +25,7 @@ export async function fetchDataFromQuery(id, rootUrl, options) {
     if(data.results.length) {
       setColumns(prepareColumns ? prepareColumns(Object.keys(data.results[0])) : Object.keys(data.results[0]))
     }
+    setSchema(data.schema)
     if(typeof setLoading === 'function') {
       setLoading(false);
     }
