@@ -9,7 +9,6 @@ export async function fetchDataFromQuery(id, rootUrl, options) {
   if(typeof setLoading === 'function') {
     setLoading(true);
   }
-  console.log('service', conditions)
   return await axios.post(`${rootUrl}/datastore/query/?`, {
     resources: [{id: id, alias: 't'}],
     keys: keys,

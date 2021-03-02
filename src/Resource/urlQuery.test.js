@@ -1,20 +1,15 @@
 import { transformDatastoreQueryToURL, transformURLtoDatastoreQuery} from './urlQuery';
-// expect(prepareColumns(testArray1)).toEqual([
-//   {Header: 'my_column', accessor: 'my_column'},
-//   {Header: 'column_2', accessor: 'column_2'},
-// ]);
-
 
 describe('url to json', () => {
-  test('blha', async () => {
-    expect(transformURLtoDatastoreQuery('?my_column[conditions]=foobar&my_column[operator]=LIKE')).toEqual({
+  test('basic url to JSON transform', async () => {
+    expect(transformURLtoDatastoreQuery('?my_column[conditions]=foobar')).toEqual({
       conditions: [{resource: 't', property: 'my_column', value: 'foobar', operator: '='}]
     })
   })
 })
 
 describe('json to url', () => {
-  test('blha', async () => {
+  test('basic JSON to url transform', async () => {
     const base = {
       conditions: [
         {
