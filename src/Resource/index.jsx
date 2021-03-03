@@ -12,6 +12,8 @@ const Resource = ({ distribution, rootUrl, children, options }) => {
     count,
     limit,
     offset,
+    schema,
+    conditions,
     setResource,
     setLimit,
     setOffset,
@@ -39,6 +41,8 @@ const Resource = ({ distribution, rootUrl, children, options }) => {
       totalRows: count,
       limit: limit,
       offset: offset,
+      conditions: conditions,
+      schema: schema,
     }}>
       {(values.length)
         && children

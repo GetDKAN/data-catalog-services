@@ -12,8 +12,9 @@ const useDatastore = (resourceId, rootAPIUrl, options) => {
   const [columns, setColumns] = useState([]);
   const [offset, setOffset] = useState(options.offset ? options.offset : 0);
   const [loading, setLoading] = useState(false);
-  const [conditions, setConditions] = useState()
-  const [sort, setSort] = useState()
+  const [conditions, setConditions] = useState(options.conditions ? options.conditions : undefined)
+  const [sort, setSort] = useState();
+  const [schema, setSchema] = useState({});
   // const [joins, setJoins] = useState()
   // const [properties, setProperties] = useState()
   const prevLimitRef = useRef();
@@ -32,7 +33,7 @@ const useDatastore = (resourceId, rootAPIUrl, options) => {
     if(!loading) {
       const newOffset = prevLimit === limit ? offset : 0;
       fetchDataFromQuery(id, rootUrl,
-        { keys, limit, offset: newOffset, conditions, sort, prepareColumns, setValues, setCount, setColumns, setLoading}
+        { keys, limit, offset: newOffset, conditions, sort, prepareColumns, setValues, setCount, setColumns, setLoading, setSchema}
       )
     }
   }, [id, rootUrl, offset, conditions, sort, limit])
@@ -44,6 +45,8 @@ const useDatastore = (resourceId, rootAPIUrl, options) => {
     columns,
     limit,
     offset,
+    schema,
+    conditions,
     setResource,
     setRootUrl,
     setLimit,
