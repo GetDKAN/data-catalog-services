@@ -15,9 +15,11 @@
 
 export function transformDatastoreQueryToURL(query) {
   let queryURL = [];
-  const queryKeys = Object.keys(query);
-  queryKeys.forEach((key) => {
-    queryURL.push(`${query[key][0].property}[${key}]=${query[key][0].value}`)
+  query.conditions.forEach((condition) => {
+    queryURL.push(`${condition.property}[conditions]=${condition.value}`);
+    if(condition.operator !== '=') {
+      queryURL.push(`${condition.property}[operator]=${condition.operator}`);
+    }
   })
 
   return queryURL.join('&');
@@ -27,38 +29,58 @@ export function transformURLtoDatastoreQuery(url) {
   if (url.charAt(0) == "?") {
     url = url.substr(1);
   }
-  let datastoreQuery = {}
+  let datastoreQuery = {
+    conditions: []
+  }
   let params = url.split('&')
-  params.forEach((param) => {
+
+  let queryArray = params.map((param) => {
     const paramType =  param.substring(
       param.lastIndexOf("[") + 1, 
       param.lastIndexOf("]")
     );
     const columnName = param.substring(0, param.lastIndexOf("["))
     const value = param.substring(param.lastIndexOf("=") + 1)
-    datastoreQuery[paramType] = [
-      {
-        resource: 't',
-        property: columnName,
-        value: value,
-        operator: '='
-      }
-    ];
-    // if (paramType === 'conditions') {
-    //   conditions.push({column: columnName, value: value});
-    // }
-
-    
-
+    return {
+      paramType,
+      columnName,
+      value,
+    }
   })
 
-  // console.log(conditions)
 
-
-
-
-
-
-
-  return datastoreQuery
+  queryArray.forEach((query) => {
+    const {paramType, columnName, value} = query;
+    const currentConditionIndex = datastoreQuery.conditions.findIndex((obj) => obj.property === columnName);
+    if(currentConditionIndex > -1) {
+      if(paramType === 'conditions') {
+        datastoreQuery.conditions[currentConditionIndex].value = value
+      } else {
+        datastoreQuery.conditions[currentConditionIndex].operator = value
+      }
+    } else {
+      if(paramType === 'conditions') {
+        datastoreQuery.conditions = [
+          ...datastoreQuery.conditions,
+          {
+            resource: 't',
+            property: columnName,
+            value: value,
+            operator: '='
+          }
+        ]
+      } else {
+        datastoreQuery.conditions = [
+          ...datastoreQuery.conditions,
+          {
+            resource: 't',
+            property: columnName,
+            value: '',
+            operator: value
+          }
+        ]
+      }
+    }
+  })
+  return datastoreQuery;
 }
