@@ -1,6 +1,6 @@
 {
   "name": "@civicactions/data-catalog-services",
-  "version": "1.0.0-alpha.2",
+  "version": "1.0.0-alpha.3",
   "description": "Functions and React components to connect to the DKAN api.",
   "main": "lib/index.js",
   "scripts": {
