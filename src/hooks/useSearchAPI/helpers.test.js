@@ -4,6 +4,8 @@ import {
   isSelectedFacet,
   updateSelectedFacetObject,
   fetchDatasets,
+  transformUrlParamsToSearchObject,
+  stringifySearchParams
 } from './helpers';
 
 jest.mock('axios');
@@ -69,6 +71,24 @@ describe('updateSelectedFacets', () => {
   });
 });
 
+describe('transformUrlParamsToSearchObject', () => {
+  test('returns fulltext', async () => {
+    expect(transformUrlParamsToSearchObject('?fulltext=foobar', [])).toEqual({fulltext: 'foobar', selectedFacets: {}, sort: undefined});
+  });
+  test('returns sort', async () => {
+    expect(transformUrlParamsToSearchObject('?sort=title', [])).toEqual({fulltext: undefined, selectedFacets: {}, sort: 'title'});
+  });
+  test('returns selectedFacets', async () => {
+    const selectedFacets = {theme: ['dkan'], keyword: ['foobar', 'fizzbang']}
+    expect(transformUrlParamsToSearchObject('?theme[]=dkan&keyword[]=foobar&keyword[]=fizzbang', ['theme', 'keyword'])).toEqual({fulltext: undefined, selectedFacets: selectedFacets, sort: undefined});
+  });
+  test('returns everything', async () => {
+    const selectedFacets = {theme: ['dkan'], keyword: ['foobar', 'fizzbang']}
+    expect(transformUrlParamsToSearchObject('?theme[]=dkan&keyword[]=foobar&keyword[]=fizzbang&fulltext=blah&sort=title', ['theme', 'keyword'])).toEqual({fulltext: 'blah', selectedFacets: selectedFacets, sort: 'title'});
+  });
+})
+
+
 describe('fetchDatasets', () => {
   test('requests default list of datasets from search API', async () => {
     axios.get.mockImplementation(() => Promise.resolve(data));
@@ -101,3 +121,20 @@ describe('fetchDatasets', () => {
     expect(axios.get).toHaveBeenCalledWith(`${rootUrl}/search/?keyword=react&theme=test,dkan`);
   })
 });
+
+describe('stringifySearchParams', () => {
+  test('returns fulltext', async () => {
+    expect(stringifySearchParams({}, 'foobar', '')).toEqual('?fulltext=foobar');
+  });
+  test('returns sort', async () => {
+    expect(stringifySearchParams({}, '', 'title')).toEqual('?sort=title');
+  });
+  test('returns selectedFacets', async () => {
+    const selectedFacets = {theme: ['dkan'], keyword: ['foobar', 'fizzbang']}
+    expect(stringifySearchParams(selectedFacets, '', '')).toEqual('?theme[]=dkan&keyword[]=foobar&keyword[]=fizzbang');
+  });
+  test('returns everything', async () => {
+    const selectedFacets = {theme: ['dkan'], keyword: ['foobar', 'fizzbang']}
+    expect(stringifySearchParams(selectedFacets, 'blah', 'title')).toEqual('?theme[]=dkan&keyword[]=foobar&keyword[]=fizzbang&fulltext=blah&sort=title');
+  });
+})

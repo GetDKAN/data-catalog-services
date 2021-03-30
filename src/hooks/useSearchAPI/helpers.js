@@ -1,5 +1,6 @@
 import axios from 'axios';
 import queryString from 'query-string';
+import qs from 'qs';
 
 export function separateFacets(facets) {
   let facetObj = {};
@@ -34,6 +35,19 @@ export function updateSelectedFacetObject(currentFacet, selectedFacets) {
   return newFacetList;
 }
 
+export const transformUrlParamsToSearchObject = (searchParams, facetList) => {
+  const params = qs.parse(searchParams, { ignoreQueryPrefix: true })
+  const selectedFacets = {}
+  facetList.forEach((facet) => {
+    selectedFacets[facet] = params[facet] ? params[facet] : [];
+  })
+  return {
+    selectedFacets: selectedFacets,
+    fulltext: params.fulltext,
+    sort: params.sort
+  }
+}
+
 export async function fetchDatasets(rootUrl, options) {
   const { fulltext, selectedFacets, sort, sortOrder, page, pageSize } = options;
   
@@ -46,4 +60,15 @@ export async function fetchDatasets(rootUrl, options) {
     ['page-size']: pageSize !== 10 ? pageSize : '',
   }
   return await axios.get(`${rootUrl}/search/?${queryString.stringify(params, {arrayFormat: 'comma', skipEmptyString: true })}`)
+}
+
+export function stringifySearchParams(selectedFacets, fulltext, sort) {
+  let newParams = {...selectedFacets}
+  if(fulltext) {
+    newParams.fulltext = fulltext;
+  }
+  if(sort) {
+    newParams.sort = sort;
+  }
+  return qs.stringify(newParams, {addQueryPrefix: true, encode: false, arrayFormat: 'brackets'})
 }
