@@ -35,7 +35,7 @@ export function updateSelectedFacetObject(currentFacet, selectedFacets) {
   return newFacetList;
 }
 
-export const transformUrlParamsToSearchObject = (searchParams, facetList) => {
+export function transformUrlParamsToSearchObject(searchParams, facetList) {
   const params = qs.parse(searchParams, { ignoreQueryPrefix: true })
   const selectedFacets = {}
   facetList.forEach((facet) => {
