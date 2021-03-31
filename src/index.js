@@ -15,6 +15,6 @@ export { transformTableFilterToQueryCondition, transformTableFilterToSQLConditio
 
 // HELPERS
 export { buildPageArray } from './hooks/usePagination/buildPageArray';
-export { separateFacets } from './hooks/useSearchAPI/helpers';
+export { separateFacets, transformUrlParamsToSearchObject, stringifySearchParams, fetchDatasets } from './hooks/useSearchAPI/helpers';
 
 export { transformURLtoDatastoreQuery } from './Resource/urlQuery';
