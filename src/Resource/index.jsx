@@ -44,9 +44,7 @@ const Resource = ({ distribution, rootUrl, children, options }) => {
       conditions: conditions,
       schema: schema,
     }}>
-      {(values.length)
-        && children
-      }
+      {children}
     </ResourceDispatch.Provider>
   );
 }

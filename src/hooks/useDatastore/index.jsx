@@ -4,6 +4,7 @@ import { fetchDataFromQuery } from './fetch';
 const useDatastore = (resourceId, rootAPIUrl, options) => {
   const keys = options.keys ? options.keys : true;
   const { prepareColumns } = options;
+  const [manual, setManual] = useState(options.manual ? options.manual : false);
   const [values, setValues] = useState([]);
   const [id, setResource] = useState(resourceId);
   const [rootUrl, setRootUrl] = useState(rootAPIUrl);
@@ -28,13 +29,17 @@ const useDatastore = (resourceId, rootAPIUrl, options) => {
   //   const newOffset = prevLimit === limit ? offset : 0;
   //   setOffset(newOffset)
   // }, [limit])
-
-  useEffect(() => {
-    if(!loading) {
-      const newOffset = prevLimit === limit ? offset : 0;
+  
+  function fetchData() {
+    const newOffset = prevLimit === limit ? offset : 0;
       fetchDataFromQuery(id, rootUrl,
         { keys, limit, offset: newOffset, conditions, sort, prepareColumns, setValues, setCount, setColumns, setLoading, setSchema}
       )
+  }
+
+  useEffect(() => {
+    if(!loading && !manual) {
+      fetchData()
     }
   }, [id, rootUrl, offset, conditions, sort, limit])
 
@@ -53,6 +58,8 @@ const useDatastore = (resourceId, rootAPIUrl, options) => {
     setOffset,
     setConditions,
     setSort,
+    setManual,
+    fetchData,
   }
 }
 
