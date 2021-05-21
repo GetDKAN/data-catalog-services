@@ -5,6 +5,7 @@ const useDatastore = (resourceId, rootAPIUrl, options) => {
   const keys = options.keys ? options.keys : true;
   const { prepareColumns } = options;
   const [manual, setManual] = useState(options.manual ? options.manual : false);
+  const [requireConditions, setRequireConditions] = useState(options.requireConditions ? options.requireConditions : false);
   const [values, setValues] = useState([]);
   const [id, setResource] = useState(resourceId);
   const [rootUrl, setRootUrl] = useState(rootAPIUrl);
@@ -39,9 +40,21 @@ const useDatastore = (resourceId, rootAPIUrl, options) => {
 
   useEffect(() => {
     if(!loading && !manual) {
-      fetchData()
+      if (!requireConditions) {
+        fetchData()
+      }
+      else if(requireConditions) {
+        if (conditions && conditions.length) {
+          fetchData()
+        }
+        else {
+          setCount(null);
+          setValues([]);
+        }
+      }
     }
-  }, [id, rootUrl, offset, conditions, sort, limit])
+    
+  }, [id, rootUrl, offset, conditions, sort, limit, requireConditions])
 
   return {
     loading,
@@ -59,6 +72,7 @@ const useDatastore = (resourceId, rootAPIUrl, options) => {
     setConditions,
     setSort,
     setManual,
+    setRequireConditions,
     fetchData,
   }
 }

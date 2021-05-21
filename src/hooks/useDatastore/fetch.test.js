@@ -26,7 +26,7 @@ describe('fetchDataFromQuery', () => {
       limit: 20,
       offset: 0,
       conditions: [],
-      sort: {asc: [], desc: []},
+      sorts: [],
       setValues: () => {},
       setCount: () => {},
       setColumns: () => {},
