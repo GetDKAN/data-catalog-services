@@ -5,7 +5,7 @@ const useDatastore = (resourceId, rootAPIUrl, options) => {
   const keys = options.keys ? options.keys : true;
   const { prepareColumns } = options;
   const [manual, setManual] = useState(options.manual ? options.manual : false);
-  const [requireConditions, setRequireConditions] = useState(options.requireConditions ? options.manual : false);
+  const [requireConditions, setRequireConditions] = useState(options.requireConditions ? options.requireConditions : false);
   const [values, setValues] = useState([]);
   const [id, setResource] = useState(resourceId);
   const [rootUrl, setRootUrl] = useState(rootAPIUrl);
