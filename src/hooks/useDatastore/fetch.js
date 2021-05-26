@@ -15,7 +15,7 @@ export async function fetchDataFromQuery(id, rootUrl, options) {
     limit: limit,
     offset: offset,
     conditions: conditions,
-    sorts: sort,
+    sort: sort,
   })
   .then((res) => {
     const { data } = res;
