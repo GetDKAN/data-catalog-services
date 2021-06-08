@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export async function fetchDataFromQuery(id, rootUrl, options) {
-  const { keys, limit, offset, conditions, sort, prepareColumns, setValues, setCount, setColumns, setLoading, setSchema } = options;
+  const { keys, limit, offset, conditions, sort, prepareColumns, properties, setValues, setCount, setColumns, setLoading, setSchema } = options;
   if(!id) {
     // TODO: Throw error
     return false;
@@ -16,6 +16,7 @@ export async function fetchDataFromQuery(id, rootUrl, options) {
     offset: offset,
     conditions: conditions,
     sorts: sort,
+    properties: properties
   })
   .then((res) => {
     const { data } = res;

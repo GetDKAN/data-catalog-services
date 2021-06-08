@@ -18,7 +18,7 @@ const useDatastore = (resourceId, rootAPIUrl, options) => {
   const [sort, setSort] = useState();
   const [schema, setSchema] = useState({});
   // const [joins, setJoins] = useState()
-  // const [properties, setProperties] = useState()
+  const [properties, setProperties] = useState(options.properties ? options.properties : undefined)
   const prevLimitRef = useRef();
 
   useEffect(() => {
@@ -34,7 +34,7 @@ const useDatastore = (resourceId, rootAPIUrl, options) => {
   function fetchData() {
     const newOffset = prevLimit === limit ? offset : 0;
       fetchDataFromQuery(id, rootUrl,
-        { keys, limit, offset: newOffset, conditions, sort, prepareColumns, setValues, setCount, setColumns, setLoading, setSchema}
+        { keys, limit, offset: newOffset, conditions, sort, prepareColumns, properties, setValues, setCount, setColumns, setLoading, setSchema, setProperties}
       )
   }
 
