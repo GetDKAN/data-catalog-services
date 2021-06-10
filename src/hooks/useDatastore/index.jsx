@@ -14,8 +14,8 @@ const useDatastore = (resourceId, rootAPIUrl, options) => {
   const [columns, setColumns] = useState([]);
   const [offset, setOffset] = useState(options.offset ? options.offset : 0);
   const [loading, setLoading] = useState(false);
-  const [conditions, setConditions] = useState(options.conditions ? options.conditions : undefined)
-  const [sort, setSort] = useState();
+  const [conditions, setConditions] = useState(options.conditions ? options.conditions : undefined);
+  const [sort, setSort] = useState(options.sort ? options.sort : undefined);
   const [schema, setSchema] = useState({});
   // const [joins, setJoins] = useState()
   const [properties, setProperties] = useState(options.properties ? options.properties : undefined)
