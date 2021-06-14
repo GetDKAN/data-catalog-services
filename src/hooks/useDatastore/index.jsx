@@ -14,11 +14,11 @@ const useDatastore = (resourceId, rootAPIUrl, options) => {
   const [columns, setColumns] = useState([]);
   const [offset, setOffset] = useState(options.offset ? options.offset : 0);
   const [loading, setLoading] = useState(false);
-  const [conditions, setConditions] = useState(options.conditions ? options.conditions : undefined)
-  const [sort, setSort] = useState();
+  const [conditions, setConditions] = useState(options.conditions ? options.conditions : undefined);
+  const [sort, setSort] = useState(options.sort ? options.sort : undefined);
   const [schema, setSchema] = useState({});
   // const [joins, setJoins] = useState()
-  // const [properties, setProperties] = useState()
+  const [properties, setProperties] = useState(options.properties ? options.properties : undefined)
   const prevLimitRef = useRef();
 
   useEffect(() => {
@@ -34,7 +34,7 @@ const useDatastore = (resourceId, rootAPIUrl, options) => {
   function fetchData() {
     const newOffset = prevLimit === limit ? offset : 0;
       fetchDataFromQuery(id, rootUrl,
-        { keys, limit, offset: newOffset, conditions, sort, prepareColumns, setValues, setCount, setColumns, setLoading, setSchema}
+        { keys, limit, offset: newOffset, conditions, sort, prepareColumns, properties, setValues, setCount, setColumns, setLoading, setSchema, setProperties}
       )
   }
 
