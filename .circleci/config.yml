@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     parallelism: 1
-    machine:
+    docker:
       image: circleci/node:latest
     environment:
       TEST_RESULTS: /tmp/test-results
