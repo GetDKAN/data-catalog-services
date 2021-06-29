@@ -35,20 +35,7 @@ export function updateSelectedFacetObject(currentFacet, selectedFacets) {
   return newFacetList;
 }
 
-export function transformUrlParamsToSearchObject(searchParams, facetList) {
-  const params = qs.parse(searchParams, { ignoreQueryPrefix: true })
-  const selectedFacets = {}
-  facetList.forEach((facet) => {
-    selectedFacets[facet] = params[facet] ? params[facet] : [];
-  })
-  return {
-    selectedFacets: selectedFacets,
-    fulltext: params.fulltext,
-    sort: params.sort
-  }
-}
-
-export async function fetchDatasets(rootUrl, options) {
+export async function fetchDatasets(rootUrl, options, additionalParams) {
   const { fulltext, selectedFacets, sort, sortOrder, page, pageSize } = options;
   
   let params = {
@@ -58,6 +45,7 @@ export async function fetchDatasets(rootUrl, options) {
     ['sort-order']: sortOrder ? sortOrder : '',
     page: page !== 1 ? page : '',  //use index except for when submitting to Search API
     ['page-size']: pageSize !== 10 ? pageSize : '',
+    ...additionalParams
   }
   return await axios.get(`${rootUrl}/search/?${queryString.stringify(params, {arrayFormat: 'comma', skipEmptyString: true })}`)
 }

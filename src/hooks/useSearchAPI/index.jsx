@@ -1,7 +1,7 @@
 import {useState, useEffect} from 'react';
 import { updateSelectedFacetObject, fetchDatasets } from './helpers';
 
-const useSearchAPI = (rootUrl, initialSearchParams={}) => {
+const useSearchAPI = (rootUrl, initialSearchParams={}, additionalParams={}) => {
   const defaultSort = '';
   const defaultFulltext = '';
   const defaultSelectedFacets = {};
@@ -31,7 +31,7 @@ const useSearchAPI = (rootUrl, initialSearchParams={}) => {
       page: (Number(page) + 1),
       pageSize: pageSize
     }
-    const results = await fetchDatasets(rootUrl, options);
+    const results = await fetchDatasets(rootUrl, options, additionalParams);
     const itemKeys = Object.keys(results.data.results);
     const itemsArray = itemKeys.map((key) => {
       return results.data.results[key]

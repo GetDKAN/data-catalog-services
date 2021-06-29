@@ -1,19 +1,14 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const useMetastoreDataset = (datasetId, rootAPIUrl) => {
+const useMetastoreDataset = (datasetId, rootAPIUrl, additionalParams) => {
   const [dataset, setDataset] = useState({});
   const [id, setId] = useState(datasetId)
   const [rootUrl, setRootUrl] = useState(rootAPIUrl)
   useEffect(() => {
     async function fetchData() {
-      return axios.get(`${rootUrl}/metastore/schemas/dataset/items/${id}?show-reference-ids`)
-        .then((res) => {
-          setDataset(res.data)
-        })
-        .catch((error) => {
-          setDataset({error: error});
-        });
+      return axios.get(`${rootUrl}/metastore/schemas/dataset/items/${id}?show-reference-ids${additionalParams}`)
+        .then((res) => setDataset(res.data));
     }
     fetchData();
   }, [id, rootUrl]);
