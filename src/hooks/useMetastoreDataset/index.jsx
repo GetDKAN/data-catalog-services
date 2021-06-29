@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import qs from 'qs';
 import axios from 'axios';
 
-const useMetastoreDataset = (datasetId, rootAPIUrl, additionalParams) => {
+const useMetastoreDataset = (datasetId, rootAPIUrl, additionalParams={}) => {
   const [dataset, setDataset] = useState({});
   const [id, setId] = useState(datasetId)
   const [rootUrl, setRootUrl] = useState(rootAPIUrl)
