@@ -65,6 +65,8 @@ const useDatastore = (resourceId, rootAPIUrl, options) => {
     offset,
     schema,
     conditions,
+    properties,
+    setProperties,
     setResource,
     setRootUrl,
     setLimit,
