@@ -2,7 +2,7 @@ import axios from 'axios';
 import qs from 'qs'
 
 export async function fetchDataFromQuery(id, rootUrl, options, additionalParams) {
-  const { keys, limit, offset, conditions, sort, prepareColumns, setValues, setCount, setColumns, setLoading, setSchema } = options;
+  const { keys, limit, offset, conditions, sort, prepareColumns, properties, setValues, setCount, setColumns, setLoading, setSchema } = options;
   if(!id) {
     // TODO: Throw error
     return false;
@@ -10,15 +10,6 @@ export async function fetchDataFromQuery(id, rootUrl, options, additionalParams)
   if(typeof setLoading === 'function') {
     setLoading(true);
   }
-  // return await axios.post(`${rootUrl}/datastore/query/?`, {
-  //   resources: [{id: id, alias: 't'}],
-  //   keys: keys,
-  //   limit: limit,
-  //   offset: offset,
-  //   conditions: conditions,
-  //   sort: sort,
-  //   ...additionalParams
-  // })
   return await axios({
     method: 'GET',
     url: `${rootUrl}/datastore/query/${id}`,
@@ -27,7 +18,8 @@ export async function fetchDataFromQuery(id, rootUrl, options, additionalParams)
       limit: limit,
       offset: offset,
       conditions: conditions,
-      sort: sort,
+      sorts: sort,
+      properties: properties,
       ...additionalParams,
     },
     paramsSerializer: (params) => {
