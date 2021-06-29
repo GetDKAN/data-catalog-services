@@ -1,7 +1,7 @@
 import {useState, useEffect, useRef} from 'react';
 import { fetchDataFromQuery } from './fetch';
 
-const useDatastore = (resourceId, rootAPIUrl, options) => {
+const useDatastore = (resourceId, rootAPIUrl, options, additionalParams={}) => {
   const keys = options.keys ? options.keys : true;
   const { prepareColumns } = options;
   const [manual, setManual] = useState(options.manual ? options.manual : false);
@@ -34,7 +34,8 @@ const useDatastore = (resourceId, rootAPIUrl, options) => {
   function fetchData() {
     const newOffset = prevLimit === limit ? offset : 0;
       fetchDataFromQuery(id, rootUrl,
-        { keys, limit, offset: newOffset, conditions, sort, prepareColumns, properties, setValues, setCount, setColumns, setLoading, setSchema, setProperties}
+        { keys, limit, offset: newOffset, conditions, sort, prepareColumns, properties, setValues, setCount, setColumns, setLoading, setSchema, setProperties },
+        additionalParams
       )
   }
 
