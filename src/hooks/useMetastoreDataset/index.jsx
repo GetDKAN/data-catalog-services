@@ -10,7 +10,8 @@ const useMetastoreDataset = (datasetId, rootAPIUrl, additionalParams={}) => {
   useEffect(() => {
     async function fetchData() {
       return axios.get(`${rootUrl}/metastore/schemas/dataset/items/${id}?show-reference-ids${additionalParamsString}`)
-        .then((res) => setDataset(res.data));
+        .then((res) => setDataset(res.data))
+        .catch((error) => setDataset({error: error}));
     }
     fetchData();
   }, [id, rootUrl]);
