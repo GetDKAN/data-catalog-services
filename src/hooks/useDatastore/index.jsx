@@ -26,10 +26,10 @@ const useDatastore = (resourceId, rootAPIUrl, options, additionalParams={}) => {
   })
   const prevLimit = prevLimitRef.current;
 
-  // useEffect(() => {
-  //   const newOffset = prevLimit === limit ? offset : 0;
-  //   setOffset(newOffset)
-  // }, [limit])
+  useEffect(() => {
+    const newOffset = prevLimit === limit ? offset : 0;
+    setOffset(newOffset)
+  }, [limit])
   
   function fetchData() {
     const newOffset = prevLimit === limit ? offset : 0;

@@ -2,7 +2,6 @@
 export { default as useDatastore } from './hooks/useDatastore'
 export { default as useDatastoreSQL } from './hooks/useDatastoreSQL';
 export { default as useMetastoreDataset } from './hooks/useMetastoreDataset'
-export { default as usePagination } from './hooks/usePagination';
 export { default as useSearchAPI } from './hooks/useSearchAPI';
 
 // REACT COMPONENTS and OUT OF BOX STUFF
@@ -14,7 +13,6 @@ export { transformTableSortToQuerySort } from './hooks/useDatastore/transformSor
 export { transformTableFilterToQueryCondition, transformTableFilterToSQLCondition } from './hooks/useDatastore/transformConditions';
 
 // HELPERS
-export { buildPageArray } from './hooks/usePagination/buildPageArray';
 export { separateFacets, transformUrlParamsToSearchObject, stringifySearchParams, fetchDatasets } from './hooks/useSearchAPI/helpers';
 
 export { transformURLtoDatastoreQuery } from './Resource/urlQuery';
