@@ -6,7 +6,7 @@ const useSearchAPI = (rootUrl, initialSearchParams={}, additionalParams={}) => {
   const defaultFulltext = '';
   const defaultSelectedFacets = {};
   const defaultSortOrder = '';
-  const defaultPage = 0;
+  const defaultPage = 1;
   const defaultPageSize = 10;
 
   const sortOptions = ['modified', 'title'];
@@ -28,7 +28,7 @@ const useSearchAPI = (rootUrl, initialSearchParams={}, additionalParams={}) => {
       selectedFacets: selectedFacets,
       sort: sort,
       sortOrder: sortOrder,
-      page: (Number(page) + 1),
+      page: (Number(page)),
       pageSize: pageSize
     }
     const results = await fetchDatasets(rootUrl, options, additionalParams);
@@ -52,6 +52,10 @@ const useSearchAPI = (rootUrl, initialSearchParams={}, additionalParams={}) => {
     const facets = updateSelectedFacetObject(currentFacet, selectedFacets);
     setSelectedFacets(facets);
   }
+
+  useEffect(() => {
+    setPage(1)
+  }, [fulltext, selectedFacets, pageSize])
 
   useEffect(() => {
     const timer = setTimeout(() => {

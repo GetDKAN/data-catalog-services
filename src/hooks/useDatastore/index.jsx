@@ -20,23 +20,22 @@ const useDatastore = (resourceId, rootAPIUrl, options, additionalParams={}) => {
   // const [joins, setJoins] = useState()
   const [properties, setProperties] = useState(options.properties ? options.properties : undefined)
   const prevLimitRef = useRef();
+  const prevOffsetRef = useRef();
 
   useEffect(() => {
     prevLimitRef.current = limit;
+    prevOffsetRef.current = offset;
   })
   const prevLimit = prevLimitRef.current;
-
-  // useEffect(() => {
-  //   const newOffset = prevLimit === limit ? offset : 0;
-  //   setOffset(newOffset)
-  // }, [limit])
+  const prevOffset = prevOffsetRef.current;
   
   function fetchData() {
-    const newOffset = prevLimit === limit ? offset : 0;
-      fetchDataFromQuery(id, rootUrl,
-        { keys, limit, offset: newOffset, conditions, sort, prepareColumns, properties, setValues, setCount, setColumns, setLoading, setSchema, setProperties },
-        additionalParams
-      )
+    let newOffset = prevLimit === limit ? prevOffset !== offset ? offset : 0 : 0;
+    setOffset(newOffset)
+    fetchDataFromQuery(id, rootUrl,
+      { keys, limit, offset: newOffset, conditions, sort, prepareColumns, properties, setValues, setCount, setColumns, setLoading, setSchema, setProperties },
+      additionalParams
+    );
   }
 
   useEffect(() => {
