@@ -4,15 +4,10 @@ export { default as useDatastoreSQL } from './hooks/useDatastoreSQL';
 export { default as useMetastoreDataset } from './hooks/useMetastoreDataset'
 export { default as useSearchAPI } from './hooks/useSearchAPI';
 
-// REACT COMPONENTS and OUT OF BOX STUFF
-export { default as Resource } from './Resource'
-export { ResourceDispatch, prepareColumns } from './Resource/helpers';
-
 // TRANSFORMS
 export { transformTableSortToQuerySort } from './hooks/useDatastore/transformSorts';
 export { transformTableFilterToQueryCondition, transformTableFilterToSQLCondition } from './hooks/useDatastore/transformConditions';
 
 // HELPERS
 export { separateFacets, transformUrlParamsToSearchObject, stringifySearchParams, fetchDatasets } from './hooks/useSearchAPI/helpers';
-
-export { transformURLtoDatastoreQuery } from './Resource/urlQuery';
+export { prepareColumns } from './Resource/helpers';
