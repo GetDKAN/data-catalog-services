@@ -26,10 +26,11 @@ describe('fetchDataFromQuery', () => {
       limit: 20,
       offset: 0,
       conditions: [],
-      sort: {asc: [], desc: []},
+      sorts: [],
       setValues: () => {},
       setCount: () => {},
-      setColumns: () => {}
+      setColumns: () => {},
+      setSchema: () => {}
     })
     expect(results.count).toEqual(data.data.count);
     expect(results.results).toEqual(data.data.results);
