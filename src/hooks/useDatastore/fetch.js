@@ -28,10 +28,11 @@ export async function fetchDataFromQuery(id, rootUrl, options, additionalParams)
   })
   .then((res) => {
     const { data } = res;
+    const propertyKeys = data.schema[id] && data.schema[id].fields ? Object.keys(data.schema[id].fields) : [];
     setValues(data.results),
     setCount(data.count)
     if(data.results.length) {
-      setColumns(prepareColumns ? prepareColumns(Object.keys(data.results[0])) : Object.keys(data.results[0]))
+      setColumns(prepareColumns ? prepareColumns(propertyKeys) : propertyKeys)
     }
     setSchema(data.schema)
     if(typeof setLoading === 'function') {
