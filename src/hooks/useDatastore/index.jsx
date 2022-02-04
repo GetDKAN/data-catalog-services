@@ -96,6 +96,7 @@ const useDatastore = (
     conditions,
     properties,
     setProperties,
+    setGroupings,
     setResource,
     setRootUrl,
     setLimit,
