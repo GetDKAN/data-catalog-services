@@ -12,7 +12,7 @@ jobs:
       - run:
           name: "Setup variables"
           command: |
-            echo $CIRCLE_BRANCH
+            echo $CIRCLE_BRANCH && echo `node --version`
       - run:
           name: Install Dependencies
           command: npm install
