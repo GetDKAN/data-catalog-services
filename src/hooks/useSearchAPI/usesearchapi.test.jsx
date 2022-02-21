@@ -88,7 +88,7 @@ describe("useSearchAPI Custom Hook", () => {
     await act(async () => {
       jest.runAllTimers();
     });
-    expect(axios.get).toHaveBeenCalledWith(`${rootUrl}/search/?page=5`);
+    expect(axios.get).toHaveBeenCalledWith(`${rootUrl}/search/?page=4`);
     expect(result.current.page).toEqual(4);
   });
 
@@ -143,7 +143,7 @@ describe("useSearchAPI Custom Hook", () => {
       jest.runAllTimers();
     });
     expect(axios.get).toHaveBeenCalledWith(
-      `${rootUrl}/search/?fulltext=blah&page=3&theme=dkan`
+      `${rootUrl}/search/?fulltext=blah&page=2&theme=dkan`
     );
     expect(result.current.selectedFacets).toEqual({ theme: ["dkan"] });
     expect(result.current.fulltext).toEqual("blah");
@@ -158,7 +158,7 @@ describe("useSearchAPI Custom Hook", () => {
     expect(axios.get).toHaveBeenCalledWith(`${rootUrl}/search/?`);
     expect(result.current.selectedFacets).toEqual({});
     expect(result.current.fulltext).toEqual("");
-    expect(result.current.page).toEqual(0);
+    expect(result.current.page).toEqual(1);
   });
 
   test("set hook with initial params", async () => {
@@ -176,12 +176,12 @@ describe("useSearchAPI Custom Hook", () => {
       jest.runAllTimers();
     });
     expect(axios.get).toHaveBeenCalledWith(
-      `${rootUrl}/search/?fulltext=react&page=3&page-size=25&sort=alpha&sort-order=foobar&theme=dkan`
+      `${rootUrl}/search/?fulltext=react&page-size=25&sort=alpha&sort-order=foobar&theme=dkan`
     );
 
     expect(result.current.pageSize).toEqual(25);
     expect(result.current.selectedFacets).toEqual({ theme: ["dkan"] });
-    expect(result.current.page).toEqual(2);
+    expect(result.current.page).toEqual(1);
     expect(result.current.fulltext).toEqual("react");
     expect(result.current.sort).toEqual("alpha");
     expect(result.current.sortOrder).toEqual("foobar");
