@@ -3,12 +3,13 @@ jobs:
   build:
     parallelism: 1
     docker:
-      image: cimg/node:14.18.3
+      - image: cimg/node:14.18.3
     environment:
       TEST_RESULTS: /tmp/test-results
       DRUPAL_VERSION: V8
     steps:
       - checkout
+      - run: node --version
       - run:
           name: "Setup variables"
           command: |
