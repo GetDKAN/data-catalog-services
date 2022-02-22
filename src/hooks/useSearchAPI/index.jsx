@@ -1,7 +1,7 @@
-import {useState, useEffect} from 'react';
+import { useState, useEffect } from 'react';
 import { updateSelectedFacetObject, fetchDatasets } from './helpers';
 
-const useSearchAPI = (rootUrl, initialSearchParams={}, additionalParams={}) => {
+const useSearchAPI = (rootUrl, initialSearchParams = {}, additionalParams = {}) => {
   const defaultSort = '';
   const defaultFulltext = '';
   const defaultSelectedFacets = {};
@@ -14,13 +14,25 @@ const useSearchAPI = (rootUrl, initialSearchParams={}, additionalParams={}) => {
   const [items, setItems] = useState([]);
   const [facets, setFacets] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [totalItems, setTotalItems] = useState(null)
-  const [selectedFacets, setSelectedFacets] = useState(initialSearchParams.selectedFacets ? initialSearchParams.selectedFacets : defaultSelectedFacets)
-  const [fulltext, setFulltext] = useState(initialSearchParams.fulltext ? initialSearchParams.fulltext : defaultFulltext)
-  const [sort, setSort] = useState(initialSearchParams.sort ? initialSearchParams.sort : defaultSort);
-  const [sortOrder, setSortOrder] = useState(initialSearchParams.sortOrder ? initialSearchParams.sortOrder : defaultSortOrder)
-  const [page, setPage] = useState(initialSearchParams.page ? initialSearchParams.page : defaultPage);
-  const [pageSize, setPageSize] = useState(initialSearchParams.pageSize ? initialSearchParams.pageSize : defaultPageSize)
+  const [totalItems, setTotalItems] = useState(null);
+  const [selectedFacets, setSelectedFacets] = useState(
+    initialSearchParams.selectedFacets ? initialSearchParams.selectedFacets : defaultSelectedFacets
+  );
+  const [fulltext, setFulltext] = useState(
+    initialSearchParams.fulltext ? initialSearchParams.fulltext : defaultFulltext
+  );
+  const [sort, setSort] = useState(
+    initialSearchParams.sort ? initialSearchParams.sort : defaultSort
+  );
+  const [sortOrder, setSortOrder] = useState(
+    initialSearchParams.sortOrder ? initialSearchParams.sortOrder : defaultSortOrder
+  );
+  const [page, setPage] = useState(
+    initialSearchParams.page ? initialSearchParams.page : defaultPage
+  );
+  const [pageSize, setPageSize] = useState(
+    initialSearchParams.pageSize ? initialSearchParams.pageSize : defaultPageSize
+  );
 
   async function search() {
     const options = {
@@ -28,18 +40,18 @@ const useSearchAPI = (rootUrl, initialSearchParams={}, additionalParams={}) => {
       selectedFacets: selectedFacets,
       sort: sort,
       sortOrder: sortOrder,
-      page: (Number(page)),
+      page: Number(page),
       pageSize: pageSize
-    }
+    };
     const results = await fetchDatasets(rootUrl, options, additionalParams);
     const itemKeys = Object.keys(results.data.results);
-    const itemsArray = itemKeys.map((key) => {
-      return results.data.results[key]
-    })
-    setFacets(results.data.facets)
-    setItems(itemsArray)
-    setTotalItems(results.data.total)
-    setLoading(false)
+    const itemsArray = itemKeys.map(key => {
+      return results.data.results[key];
+    });
+    setFacets(results.data.facets);
+    setItems(itemsArray);
+    setTotalItems(results.data.total);
+    setLoading(false);
   }
 
   function resetFilters() {
@@ -54,16 +66,16 @@ const useSearchAPI = (rootUrl, initialSearchParams={}, additionalParams={}) => {
   }
 
   useEffect(() => {
-    setPage(1)
-  }, [fulltext, selectedFacets, pageSize])
+    setPage(1);
+  }, [fulltext, selectedFacets, pageSize]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      setLoading(true)
-      search()
+      setLoading(true);
+      search();
     }, 1000);
     return () => clearTimeout(timer);
-  }, [fulltext, selectedFacets, sort, sortOrder, page, pageSize])
+  }, [fulltext, selectedFacets, sort, sortOrder, page, pageSize]);
 
   return {
     fulltext,
@@ -84,8 +96,8 @@ const useSearchAPI = (rootUrl, initialSearchParams={}, additionalParams={}) => {
     setSortOrder,
     updateSelectedFacets,
     setFulltext,
-    resetFilters,
-  }
-}
+    resetFilters
+  };
+};
 
 export default useSearchAPI;

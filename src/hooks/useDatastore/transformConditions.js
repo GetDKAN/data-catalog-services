@@ -9,19 +9,19 @@
 // like
 
 export function transformTableFilterToQueryCondition(filterArray) {
-  const conditions = filterArray.map((f) => {
+  const conditions = filterArray.map(f => {
     return {
       resource: 't',
       property: f.id,
       value: `%${f.value}%`,
-      operator: 'LIKE',
-    }
+      operator: 'LIKE'
+    };
   });
   return conditions;
 }
 
 export function transformTableFilterToSQLCondition(filterArray) {
-  if(!filterArray || filterArray.length === 0) {
+  if (!filterArray || filterArray.length === 0) {
     return '';
   }
 
