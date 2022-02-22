@@ -1,11 +1,13 @@
-import {useState, useEffect, useRef} from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { fetchDataFromQuery } from './fetch';
 
-const useDatastore = (resourceId, rootAPIUrl, options, additionalParams={}) => {
+const useDatastore = (resourceId, rootAPIUrl, options, additionalParams = {}) => {
   const keys = options.keys ? options.keys : true;
   const { prepareColumns } = options;
   const [manual, setManual] = useState(options.manual ? options.manual : false);
-  const [requireConditions, setRequireConditions] = useState(options.requireConditions ? options.requireConditions : false);
+  const [requireConditions, setRequireConditions] = useState(
+    options.requireConditions ? options.requireConditions : false
+  );
   const [values, setValues] = useState([]);
   const [id, setResource] = useState(resourceId);
   const [rootUrl, setRootUrl] = useState(rootAPIUrl);
@@ -18,43 +20,56 @@ const useDatastore = (resourceId, rootAPIUrl, options, additionalParams={}) => {
   const [sort, setSort] = useState(options.sort ? options.sort : undefined);
   const [schema, setSchema] = useState({});
   // const [joins, setJoins] = useState()
-  const [properties, setProperties] = useState(options.properties ? options.properties : undefined)
+  const [properties, setProperties] = useState(options.properties ? options.properties : undefined);
   const prevLimitRef = useRef();
   const prevOffsetRef = useRef();
 
   useEffect(() => {
     prevLimitRef.current = limit;
     prevOffsetRef.current = offset;
-  })
+  });
   const prevLimit = prevLimitRef.current;
   const prevOffset = prevOffsetRef.current;
-  
+
   function fetchData() {
-    let newOffset = prevLimit === limit ? prevOffset !== offset ? offset : 0 : 0;
-    setOffset(newOffset)
-    fetchDataFromQuery(id, rootUrl,
-      { keys, limit, offset: newOffset, conditions, sort, prepareColumns, properties, setValues, setCount, setColumns, setLoading, setSchema, setProperties },
+    let newOffset = prevLimit === limit ? (prevOffset !== offset ? offset : 0) : 0;
+    setOffset(newOffset);
+    fetchDataFromQuery(
+      id,
+      rootUrl,
+      {
+        keys,
+        limit,
+        offset: newOffset,
+        conditions,
+        sort,
+        prepareColumns,
+        properties,
+        setValues,
+        setCount,
+        setColumns,
+        setLoading,
+        setSchema,
+        setProperties
+      },
       additionalParams
     );
   }
 
   useEffect(() => {
-    if(!loading && !manual) {
+    if (!loading && !manual) {
       if (!requireConditions) {
-        fetchData()
-      }
-      else if(requireConditions) {
+        fetchData();
+      } else if (requireConditions) {
         if (conditions && conditions.length) {
-          fetchData()
-        }
-        else {
+          fetchData();
+        } else {
           setCount(null);
           setValues([]);
         }
       }
     }
-    
-  }, [id, rootUrl, offset, conditions, sort, limit, requireConditions])
+  }, [id, rootUrl, offset, conditions, sort, limit, requireConditions]);
 
   return {
     loading,
@@ -75,8 +90,8 @@ const useDatastore = (resourceId, rootAPIUrl, options, additionalParams={}) => {
     setSort,
     setManual,
     setRequireConditions,
-    fetchData,
-  }
-}
+    fetchData
+  };
+};
 
 export default useDatastore;

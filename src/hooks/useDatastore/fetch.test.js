@@ -5,18 +5,18 @@ jest.mock('axios');
 const rootUrl = 'http://dkan.com/api/1';
 const data = {
   data: {
-    results: [{record_id: '1', column_1: 'fizz', column_2: 'dkan'}],
+    results: [{ record_id: '1', column_1: 'fizz', column_2: 'dkan' }],
     count: '1'
   }
-}
+};
 const distribution = {
-  identifier: "1234-1234",
+  identifier: '1234-1234',
   data: {
     downloadURL: `${rootUrl}/files/file.csv`,
-    format: "csv",
-    title: "Dist Title"
+    format: 'csv',
+    title: 'Dist Title'
   }
-}
+};
 
 describe('fetchDataFromQuery', () => {
   test('returns data from datastore query endpoint', async () => {
@@ -31,8 +31,8 @@ describe('fetchDataFromQuery', () => {
       setCount: () => {},
       setColumns: () => {},
       setSchema: () => {}
-    })
+    });
     expect(results.count).toEqual(data.data.count);
     expect(results.results).toEqual(data.data.results);
-  })
+  });
 });

@@ -1,4 +1,4 @@
-import {useState, useEffect} from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { prepareColumns } from '../../Resource/helpers';
 
@@ -16,29 +16,40 @@ const useDatastoreSQL = (resourceId, rootAPIUrl, options) => {
   const [conditions, setConditions] = useState('');
 
   useEffect(() => {
-    const sqlCount = () => (axios.get(`${rootUrl}/datastore/sql/?query=[SELECT COUNT(*) FROM ${id}];${keys ? '&show-db-columns' : ''}`));
-    const sqlQuery = () => (axios.get(`${rootUrl}/datastore/sql/?query=[SELECT * FROM ${id}]${conditions}[LIMIT ${limit} OFFSET ${offset}];${keys ? '&show-db-columns' : ''}`));
+    const sqlCount = () =>
+      axios.get(
+        `${rootUrl}/datastore/sql/?query=[SELECT COUNT(*) FROM ${id}];${
+          keys ? '&show-db-columns' : ''
+        }`
+      );
+    const sqlQuery = () =>
+      axios.get(
+        `${rootUrl}/datastore/sql/?query=[SELECT * FROM ${id}]${conditions}[LIMIT ${limit} OFFSET ${offset}];${
+          keys ? '&show-db-columns' : ''
+        }`
+      );
     async function fetchData() {
-      if(!id) {
+      if (!id) {
         return false;
       }
       setLoading(true);
-      Promise.all([sqlCount(), sqlQuery()])
-        .then((res) => {
-          console.log(res)
-          const sqlCountRes = res[0];
-          const { data } = res[1];
-          setCount(Number(sqlCountRes.data[0].expression))
-          setRowsTotal(Number(sqlCountRes.data[0].expression))
-          setValues(data)
-          if(data.length) {
-            setColumns(options.prepareColumns ? prepareColumns(Object.keys(data[0])) : Object.keys(data[0]))
-          }
-          setLoading(false)
-        })
+      Promise.all([sqlCount(), sqlQuery()]).then(res => {
+        console.log(res);
+        const sqlCountRes = res[0];
+        const { data } = res[1];
+        setCount(Number(sqlCountRes.data[0].expression));
+        setRowsTotal(Number(sqlCountRes.data[0].expression));
+        setValues(data);
+        if (data.length) {
+          setColumns(
+            options.prepareColumns ? prepareColumns(Object.keys(data[0])) : Object.keys(data[0])
+          );
+        }
+        setLoading(false);
+      });
     }
     fetchData();
-  }, [id, rootUrl, limit, offset, conditions])
+  }, [id, rootUrl, limit, offset, conditions]);
 
   return {
     loading,
@@ -51,8 +62,8 @@ const useDatastoreSQL = (resourceId, rootAPIUrl, options) => {
     setRootUrl,
     setLimit,
     setOffset,
-    setConditions,
-  }
-}
+    setConditions
+  };
+};
 
 export default useDatastoreSQL;
