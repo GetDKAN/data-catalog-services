@@ -176,12 +176,12 @@ describe("useSearchAPI Custom Hook", () => {
       jest.runAllTimers();
     });
     expect(axios.get).toHaveBeenCalledWith(
-      `${rootUrl}/search/?fulltext=react&page-size=25&sort=alpha&sort-order=foobar&theme=dkan`
+      `${rootUrl}/search/?fulltext=react&page=2&page-size=25&sort=alpha&sort-order=foobar&theme=dkan`
     );
 
     expect(result.current.pageSize).toEqual(25);
     expect(result.current.selectedFacets).toEqual({ theme: ["dkan"] });
-    expect(result.current.page).toEqual(1);
+    expect(result.current.page).toEqual(2);
     expect(result.current.fulltext).toEqual("react");
     expect(result.current.sort).toEqual("alpha");
     expect(result.current.sortOrder).toEqual("foobar");
