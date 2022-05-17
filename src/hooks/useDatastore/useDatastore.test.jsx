@@ -32,10 +32,34 @@ const distribution = {
 };
 
 describe("useDatastore Custom Hook", () => {
-  test("returns data from datastore query endpoint", async () => {
-    axios.mockImplementation(() => Promise.resolve(data));
+  test("returns data from datastore query endpoint with distribution id", async () => {
+    axios.get.mockImplementation(() => Promise.resolve(data));
     const { result } = renderHook(() =>
       useDatastore(distribution.identifier, rootUrl, {})
+    );
+    await act(async () => {});
+    expect(result.current.values).toEqual(data.data.results);
+    expect(result.current.limit).toEqual(20);
+    expect(result.current.offset).toEqual(0);
+    expect(result.current.count).toEqual("1");
+    expect(result.current.columns).toEqual([
+      "record_id",
+      "column_1",
+      "column_2",
+    ]);
+    await act(async () => {
+      result.current.setLimit(100);
+    });
+    expect(result.current.limit).toEqual(100);
+    await act(async () => {
+      result.current.setOffset(25);
+    });
+    expect(result.current.offset).toEqual(25);
+  });
+  test("returns data from datastore query endpoint with dataset id", async () => {
+    axios.get.mockImplementation(() => Promise.resolve(data));
+    const { result } = renderHook(() =>
+      useDatastore([distribution.identifier, 0], rootUrl, {})
     );
     await act(async () => {});
     expect(result.current.values).toEqual(data.data.results);

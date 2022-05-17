@@ -1,7 +1,10 @@
 import axios from "axios";
+import { act } from "@testing-library/react-hooks";
 import { fetchDataFromQuery } from "./fetch";
 
 jest.mock("axios");
+jest.useFakeTimers();
+
 const rootUrl = "http://dkan.com/api/1";
 const data = {
   data: {
@@ -18,6 +21,7 @@ const data = {
     },
   },
 };
+
 const distribution = {
   identifier: "1234-1234",
   data: {
@@ -29,7 +33,7 @@ const distribution = {
 
 describe("fetchDataFromQuery", () => {
   test("returns data from datastore query endpoint", async () => {
-    axios.mockImplementation(() => Promise.resolve(data));
+    axios.get.mockImplementation(() => Promise.resolve(data));
     const results = await fetchDataFromQuery(distribution.identifier, rootUrl, {
       keys: true,
       limit: 20,
@@ -41,6 +45,42 @@ describe("fetchDataFromQuery", () => {
       setColumns: () => {},
       setSchema: () => {},
     });
+    await act(async () => {
+      jest.runAllTimers();
+    });
+
+    expect(axios.get).toHaveBeenCalledWith(
+      `${rootUrl}/datastore/query/1234-1234?keys=true&limit=20&offset=0`
+    );
+
+    expect(results.count).toEqual(data.data.count);
+    expect(results.results).toEqual(data.data.results);
+  });
+  test("returns data from datastore query index endpoint", async () => {
+    axios.get.mockImplementation(() => Promise.resolve(data));
+    const results = await fetchDataFromQuery(
+      [distribution.identifier, 0],
+      rootUrl,
+      {
+        keys: true,
+        limit: 20,
+        offset: 0,
+        conditions: [],
+        sorts: [],
+        setValues: () => {},
+        setCount: () => {},
+        setColumns: () => {},
+        setSchema: () => {},
+      }
+    );
+    await act(async () => {
+      jest.runAllTimers();
+    });
+
+    expect(axios.get).toHaveBeenCalledWith(
+      `${rootUrl}/datastore/query/1234-1234/0?keys=true&limit=20&offset=0`
+    );
+
     expect(results.count).toEqual(data.data.count);
     expect(results.results).toEqual(data.data.results);
   });
