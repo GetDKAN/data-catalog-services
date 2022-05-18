@@ -36,6 +36,14 @@ const useDatastore = (
   const prevLimitRef = useRef();
   const prevOffsetRef = useRef();
 
+  let queryId = id;
+  let queryIndex = 0;
+
+  if (Array.isArray(id)) {
+    queryId = id[0];
+    queryIndex = id[1];
+  }
+
   useEffect(() => {
     prevLimitRef.current = limit;
     prevOffsetRef.current = offset;
@@ -83,7 +91,16 @@ const useDatastore = (
         }
       }
     }
-  }, [id, rootUrl, offset, conditions, sort, limit, requireConditions]);
+  }, [
+    queryId,
+    queryIndex,
+    rootUrl,
+    offset,
+    conditions,
+    sort,
+    limit,
+    requireConditions,
+  ]);
 
   return {
     loading,
